@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 interface ILayoutBaseDePaginaProps {
     titulo: string;
     barraDeFerramentas?: ReactNode;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ children, titulo, barraDeFerramentas }) => {
