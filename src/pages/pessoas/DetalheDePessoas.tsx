@@ -4,13 +4,20 @@ import { FerramentasDeDetalhe } from "../../shared/components";
 import { useEffect, useState } from "react";
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { Box, Grid, LinearProgress, Paper, Typography } from "@mui/material";
-import { VTextField, VForm, useVForm } from "../../shared/forms";
+import { VTextField, VForm, useVForm, IVFormErrors } from "../../shared/forms";
+import * as yup from 'yup';
 
 interface IFormData {
     email: string;
     cidadeId: number;
     nomeCompleto: string;
 }
+
+const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
+    cidadeId: yup.number().required(),
+    email: yup.string().required().email(),
+    nomeCompleto: yup.string().required().min(3),
+});
 
 export const DetalheDePessoas: React.FC = () =>{
     const { formRef, save, saveAndClose, isSaveAndClose } = useVForm();
@@ -48,10 +55,14 @@ export const DetalheDePessoas: React.FC = () =>{
     }, [id]);
 
     const handleSave = (dados: IFormData) => {
-        setIsLoading(true);
+
+        formValidationSchema
+        .validate(dados, { abortEarly: false })
+        .then((dadosValidados) => {
+            setIsLoading(true);
 
         if (id === 'nova') {
-            PessoasService.create(dados)
+            PessoasService.create(dadosValidados)
             .then((result) => {
                 setIsLoading(false);
 
@@ -66,7 +77,7 @@ export const DetalheDePessoas: React.FC = () =>{
                 }
             })
         } else {
-            PessoasService.updateById(Number(id), { id: Number(id), ...dados})
+            PessoasService.updateById(Number(id), { id: Number(id), ...dadosValidados})
             .then((result) => {
                 setIsLoading(false);
                 
@@ -79,6 +90,16 @@ export const DetalheDePessoas: React.FC = () =>{
                 } 
             });
         }
+        }).catch((errors: yup.ValidationError) => {
+            const validationErrors: IVFormErrors = {};
+
+            errors.inner.forEach(error => {
+                if (!error.path) return;
+                
+                validationErrors[error.path] = error.message;                
+            });
+            formRef.current?.setErrors(validationErrors);
+        });
     }
 
     const handleDelete = (id: number) => {
