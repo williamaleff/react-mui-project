@@ -96,5 +96,31 @@
       "cidadeId": "2",
       "id": 16
     }
+  ],
+  "Cidades": [
+    {
+      "nome": "Sobral",
+      "id": 1
+    },
+    {
+      "nome": "Fortaleza",
+      "id": 2
+    },
+    {
+      "nome": "Caucaia",
+      "id": 3
+    },
+    {
+      "nome": "Amontada",
+      "id": 4
+    },
+    {
+      "nome": "Miraima",
+      "id": 5
+    },
+    {
+      "nome": "Itapipoca",
+      "id": 6
+    }
   ]
 }
