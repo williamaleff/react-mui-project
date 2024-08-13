@@ -122,5 +122,8 @@
       "nome": "Itapipoca",
       "id": 6
     }
-  ]
+  ],
+  "auth": {
+    "accessToken": "aaaaaa.bbbbbbb.ccccccc"
+  }
 }
