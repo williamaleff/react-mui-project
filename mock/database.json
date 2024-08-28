@@ -123,6 +123,79 @@
       "id": 6
     }
   ],
+  "suporte": [
+    {
+      "id": 1,
+      "tipoId": 1,
+      "descricao": "Erro no link da videoconferencia",
+      "pessoaId": 1,
+      "horario": "14:59",
+      "data": "17/08/2024",
+      "chamadoGlpi": "123456780"
+    },
+    {
+      "chamadoGlpi": "12345678",
+      "data": "2354",
+      "horario": "1234",
+      "descricao": "teste",
+      "tipoId": 1,
+      "pessoaId": 1,
+      "id": 2
+    },
+    {
+      "chamadoGlpi": "12345678",
+      "data": "345678",
+      "horario": "0000",
+      "descricao": "teste5",
+      "pessoaId": 4,
+      "tipoId": 1,
+      "id": 3
+    },
+    {
+      "id": 4,
+      "descricao": "teste 67",
+      "tipoId": 1,
+      "pessoaId": 3,
+      "chamadoGlpi": "12334509",
+      "data": "22/7/2024",
+      "horario": "21:59:38"
+    },
+    {
+      "descricao": "teste45678",
+      "tipoId": 3,
+      "pessoaId": 4,
+      "chamadoGlpi": "12345670",
+      "horario": "22:37:14",
+      "data": "22/7/2024",
+      "id": 6
+    }
+  ],
+  "tipos": [
+    {
+      "nome": "Hardware/Software",
+      "id": 1
+    },
+    {
+      "nome": "CFTV",
+      "id": 2
+    },
+    {
+      "nome": "Impressoras",
+      "id": 3
+    },
+    {
+      "nome": "Telefonia",
+      "id": 4
+    },
+    {
+      "nome": "Solicitação de Material",
+      "id": 5
+    },
+    {
+      "nome": "Abertura de Chamados",
+      "id": 6
+    }
+  ],
   "auth": {
     "accessToken": "aaaaaa.bbbbbbb.ccccccc"
   }

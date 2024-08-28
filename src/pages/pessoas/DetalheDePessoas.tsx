@@ -139,7 +139,7 @@ export const DetalheDePessoas: React.FC = () =>{
                 <LinearProgress variant="indeterminate" />
             )}
 
-            <VForm ref={formRef} onSubmit={handleSave}>
+            <VForm ref={formRef} onSubmit={handleSave} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
 
                     <Grid container direction="column" padding={2} spacing={2}>

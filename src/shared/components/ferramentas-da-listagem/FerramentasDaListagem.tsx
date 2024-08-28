@@ -3,8 +3,11 @@ import { Environment } from "../../environment";
 
 interface IFerramentasDaListagemProps {
     textoDaBusca?: string;
+    textoDaData?: string;
     mostrarInputBusca?: boolean;
+    mostrarInputData?: boolean;
     aoMudarTextoDeBusca?: (novotexto: string) => void;
+    aoMudarTextoDaData?: (novotexto: string) => void;
     textoBotaoNovo?: string;
     mostrarBotaoNovo?: boolean;
     aoClicarEmNovo?: () => void;
@@ -12,11 +15,14 @@ interface IFerramentasDaListagemProps {
 
 export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
     textoDaBusca = "",
+    textoDaData = "",
     mostrarInputBusca = false,
     aoMudarTextoDeBusca,
+    aoMudarTextoDaData,
     aoClicarEmNovo,
     textoBotaoNovo = "Novo",
     mostrarBotaoNovo = true,
+    mostrarInputData = false
 }) => {
     const theme = useTheme();
 
@@ -40,6 +46,16 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
                 />
     
             )}
+            {mostrarInputData && (
+                <TextField
+                size="small"
+                value={textoDaData}
+                onChange={(e) => aoMudarTextoDaData?.(e.target.value)} 
+                placeholder={Environment.INPUT_DE_BUSCA}
+                />
+    
+            )}
+
 
             <Box flex={1} display="flex" justifyContent="end">
                 {mostrarBotaoNovo &&(

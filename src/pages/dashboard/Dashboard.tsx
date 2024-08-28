@@ -4,6 +4,7 @@ import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useState } from "react";
 import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { SuporteService } from "../../shared/services/api/suporte/SuporteService";
 
 export const Dashboard = () => {
 
@@ -11,10 +12,14 @@ export const Dashboard = () => {
     const [totalCountCidades, setTotalCountCidades] = useState(0);
     const [isLoadingPessoas, setIsLoadingPessoas] = useState(true);
     const [totalCountPessoas, setTotalCountPessoas] = useState(0);
+    const [isLoadingSuportes, setIsLoadingSuportes] = useState(true);
+    const [totalCountSuportes, setTotalCountSuportes] = useState(0);
+
 
     useEffect(() => {
         setIsLoadingCidades(true);
         setIsLoadingPessoas(true);
+        setIsLoadingSuportes(true);
 
     
         CidadesService.getAll(1)
@@ -36,6 +41,17 @@ export const Dashboard = () => {
                 alert(result.message);
             } else {
                 setTotalCountPessoas(result.totalCount);
+            }
+        });
+
+        SuporteService.getAll(1)
+        .then((result) => {
+            setIsLoadingSuportes(false);
+
+            if (result instanceof Error) {
+                alert(result.message);
+            } else {
+                setTotalCountSuportes(result.totalCount);
             }
         });
         
@@ -90,6 +106,29 @@ export const Dashboard = () => {
                                     </Typography>
                                     )}
                                     {isLoadingCidades &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+
+                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                            <Card>
+                            <CardContent>
+                                    <Typography variant="h5" align="center">
+                                        Total de suportes
+                                    </Typography>
+
+                                    <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
+                                    {!isLoadingSuportes &&(
+                                    <Typography variant="h1">
+                                        {totalCountSuportes}
+                                    </Typography>
+                                    )}
+                                    {isLoadingSuportes &&(
                                     <Typography variant="h6">
                                         Carregando...
                                     </Typography>

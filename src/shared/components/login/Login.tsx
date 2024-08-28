@@ -1,10 +1,11 @@
-import { Paper, Avatar, Box, Button, Checkbox, CircularProgress, FormControlLabel, Link, TextField, Typography, Icon } from "@mui/material";
+import { Paper, Avatar, Box, Button, Checkbox, CircularProgress, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "../../contexts";
 import { useState } from "react";
 import * as yup from 'yup';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const loginSchema = yup.object().shape({
-    email: yup.string().email().required(),
+    email: yup.string().required(),
     password: yup.string().required().min(5),
 });
 
@@ -58,7 +59,7 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
             <Box elevation={10} style={paperStyle} component={Paper}>
                 <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
                 <Box display='flex' flexDirection='column' justifyContent="center" alignItems='center'>
-                     <Avatar style={avatarStyle}><Icon>lock</Icon></Avatar>
+                     <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
                     <h2>Entrar</h2>
                 </Box>
                 <Box gap={1} display='flex' flexDirection='column'>
