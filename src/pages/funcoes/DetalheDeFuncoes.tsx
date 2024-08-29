@@ -2,28 +2,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { FerramentasDeDetalhe } from "../../shared/components";
 import { useEffect, useState } from "react";
-import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { FuncoesService } from "../../shared/services/api/funcoes/FuncoesService";
 import { Box, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { VTextField, VForm, useVForm, IVFormErrors } from "../../shared/forms";
 import * as yup from 'yup';
-import { AutoCompleteFuncoes } from "./components/AutoCompleteFuncoes";
-import { VTextArea } from "../../shared/forms/VTextArea";
 
 interface IFormData {
-    email: string;
-    funcaoId: number;
-    nomeCompleto: string;
-    informacoes: string;
+    nome: string;
 }
 
 const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
-    funcaoId: yup.number().required(),
-    email: yup.string().required().email(),
-    nomeCompleto: yup.string().required().min(3),
-    informacoes: yup.string().required()
+    nome: yup.string().required().min(3),
 });
 
-export const DetalheDePessoas: React.FC = () =>{
+export const DetalheDeFuncoes: React.FC = () =>{
     const { formRef, save, saveAndClose, isSaveAndClose } = useVForm();
     const { id = 'nova' } = useParams<'id'>();
     const navigate = useNavigate();
@@ -35,15 +27,15 @@ export const DetalheDePessoas: React.FC = () =>{
         if (id !== 'nova') {
             setIsLoading(true);
             
-            PessoasService.getById(Number(id))
+            FuncoesService.getById(Number(id))
             .then((result) => {
                 setIsLoading(false);
 
                 if (result instanceof Error) {
                     alert(result.message);
-                    navigate('/pessoas');                    
+                    navigate('/funcoes');                    
                 } else {
-                    setNome(result.nomeCompleto);
+                    setNome(result.nome);
 
                     formRef.current?.setData(result);
                 }
@@ -51,10 +43,7 @@ export const DetalheDePessoas: React.FC = () =>{
             
         } else {
             formRef.current?.setData({
-                email: '',
-                funcaoId: undefined,
-                nomeCompleto: '',
-                informacoes: ''
+                nome: '',
             });
         }
     }, [id]);
@@ -67,7 +56,7 @@ export const DetalheDePessoas: React.FC = () =>{
             setIsLoading(true);
 
         if (id === 'nova') {
-            PessoasService.create(dadosValidados)
+            FuncoesService.create(dadosValidados)
             .then((result) => {
                 setIsLoading(false);
 
@@ -75,14 +64,14 @@ export const DetalheDePessoas: React.FC = () =>{
                     alert(result.message);
                 } else {
                     if (isSaveAndClose()) {
-                        navigate('/pessoas');
+                        navigate('/funcoes');
                     } else {
-                        navigate(`/pessoas/detalhe/${result}`);
+                        navigate(`/funcoes/detalhe/${result}`);
                     }
                 }
             })
         } else {
-            PessoasService.updateById(Number(id), { id: Number(id), ...dadosValidados})
+            FuncoesService.updateById(Number(id), { id: Number(id), ...dadosValidados})
             .then((result) => {
                 setIsLoading(false);
                 
@@ -90,7 +79,7 @@ export const DetalheDePessoas: React.FC = () =>{
                     alert(result.message);
                 } else {
                     if (isSaveAndClose()) {
-                        navigate('/pessoas');
+                        navigate('/funcoes');
                     }
                 } 
             });
@@ -109,13 +98,13 @@ export const DetalheDePessoas: React.FC = () =>{
 
     const handleDelete = (id: number) => {
         if (confirm('Realmente deseja apagar?')) {
-            PessoasService.deleteById(id)
+            FuncoesService.deleteById(id)
             .then(result => {
                 if (result instanceof Error) {
                     alert(result.message);
                 } else {
                     alert("Registro apagado com sucesso!")
-                    navigate('/pessoas');
+                    navigate('/funcoes');
                 }
             });            
         }
@@ -123,7 +112,7 @@ export const DetalheDePessoas: React.FC = () =>{
 
     return(
         <LayoutBaseDePagina
-        titulo={id === 'nova' ? 'Nova Pessoa' : nome}
+        titulo={id === 'nova' ? 'Nova Funcao' : nome}
         barraDeFerramentas={
             <FerramentasDeDetalhe 
                 textoBotaoNovo="Nova"
@@ -134,8 +123,8 @@ export const DetalheDePessoas: React.FC = () =>{
                 aoClicarEmSalvar={save}
                 aoClicarEmSalvarEFechar={saveAndClose}
                 aoClicarEmApagar={() => handleDelete(Number(id))}
-                aoClicarEmVoltar={() => navigate('/pessoas')}
-                aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
+                aoClicarEmVoltar={() => navigate('/funcoes')}
+                aoClicarEmNovo={() => navigate('/funcoes/detalhe/nova')}
             />
         }>
 
@@ -143,7 +132,13 @@ export const DetalheDePessoas: React.FC = () =>{
                 <LinearProgress variant="indeterminate" />
             )}
 
-            <VForm ref={formRef} onSubmit={handleSave} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <VForm 
+                ref={formRef} 
+                onSubmit={handleSave}
+                placeholder={undefined} 
+                onPointerEnterCapture={undefined} 
+                onPointerLeaveCapture={undefined}
+                >
                 <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
 
                     <Grid container direction="column" padding={2} spacing={2}>
@@ -160,43 +155,10 @@ export const DetalheDePessoas: React.FC = () =>{
 
                         <Grid container item direction="row" spacing={2}>
                             <Grid item xs={12} sm={12} md={6} lg={4} xl={2} >
-                            <VTextField 
-                            onChange={e => setNome(e.target.value)} 
-                            disabled={isLoading} 
-                            fullWidth 
-                            label="Nome Completo" 
-                            name="nomeCompleto" 
-                            />     
+                            <VTextField onChange={e => setNome(e.target.value)} disabled={isLoading} fullWidth label="Nome" name="nome" />     
                             </Grid>
                         </Grid>
-                        <Grid container item direction="row" spacing={2}>
-                            <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                            <VTextField 
-                                disabled={isLoading} 
-                                fullWidth 
-                                label="Email institucional" 
-                                name="email" 
-                                />                
-                            </Grid>
-                        </Grid>
-                        <Grid container item direction="row" spacing={2}>
-                            <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                                <AutoCompleteFuncoes
-                                    isExternalLoading={isLoading}
-                                    />
-                            </Grid>
-                        </Grid>
-                        <Grid container item direction="row" spacing={2}>
-                            <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                            <VTextArea 
-                                disabled={isLoading} 
-                                fullWidth 
-                                label="Informacões" 
-                                name="informacoes" 
-                                />                
-                            </Grid>
-                        </Grid>
-                        
+                       
                     </Grid>               
                     
                 </Box>

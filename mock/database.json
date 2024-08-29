@@ -1,126 +1,28 @@
 {
   "pessoas": [
     {
+      "nomeCompleto": "William Alefe Lucas Teixeira",
+      "email": "alefewilliam@gmail.com",
+      "funcaoId": "2",
       "id": 1,
-      "email": "Juca@gmail.com",
-      "cidadeId": 1,
-      "nomeCompleto": "Juca Silva"
+      "informacoes": "TI celular - 88996720754"
     },
     {
       "id": 2,
-      "email": "maria@gmail.com",
-      "cidadeId": 1,
-      "nomeCompleto": "Maria Silva"
-    },
-    {
-      "id": 3,
-      "email": "carlos@gmail.com",
-      "cidadeId": 1,
-      "nomeCompleto": "Carlos Silva"
-    },
-    {
-      "id": 4,
-      "email": "pedro@gmail.com",
-      "cidadeId": 1,
-      "nomeCompleto": "Pedro Silva"
-    },
-    {
-      "id": 5,
-      "email": "alfredo@gmail.com",
-      "cidadeId": 1,
-      "nomeCompleto": "Alfredo Silva"
-    },
-    {
-      "id": 6,
-      "email": "caio@gmail.com",
-      "cidadeId": 2,
-      "nomeCompleto": "Caio Alves"
-    },
-    {
-      "id": 7,
-      "email": "raphinha@gmail.com",
-      "cidadeId": 2,
-      "nomeCompleto": "Raphael Alves"
-    },
-    {
-      "id": 8,
-      "email": "kawane@gmail.com",
-      "cidadeId": 2,
-      "nomeCompleto": "Kawane Alves"
-    },
-    {
-      "id": 9,
-      "email": "calebe@gmail.com",
-      "cidadeId": 2,
-      "nomeCompleto": "Calebe Alves"
-    },
-    {
-      "id": 10,
-      "email": "regis@gmail.com",
-      "cidadeId": 2,
-      "nomeCompleto": "Regis Alves"
-    },
-    {
-      "id": 11,
-      "email": "Nilda@gmail.com",
-      "cidadeId": 3,
-      "nomeCompleto": "Nilda Lima"
-    },
-    {
-      "id": 12,
-      "email": "patricia@gmail.com",
-      "cidadeId": 3,
-      "nomeCompleto": "Patricia Lima"
-    },
-    {
-      "id": 13,
-      "email": "mizael@gmail.com",
-      "cidadeId": 3,
-      "nomeCompleto": "Mizael Lima"
-    },
-    {
-      "id": 14,
-      "email": "ezequiel@gmail.com",
-      "cidadeId": 3,
-      "nomeCompleto": "Ezequiel Lima"
-    },
-    {
-      "id": 15,
-      "email": "Israel@gmail.com",
-      "cidadeId": 3,
-      "nomeCompleto": "Israel lima"
-    },
-    {
-      "nomeCompleto": "William Alefe Lucas Teixeira",
-      "email": "alefewilliam@gmail.com",
-      "cidadeId": "2",
-      "id": 16
+      "nomeCompleto": "Francisco Obete de Souza",
+      "email": "Obete.souza@sap",
+      "funcaoId": 1,
+      "informacoes": "Adjunto"
     }
   ],
-  "Cidades": [
+  "funcoes": [
     {
-      "nome": "Sobral",
+      "nome": "Policial Penal",
       "id": 1
     },
     {
-      "nome": "Fortaleza",
+      "nome": "TI",
       "id": 2
-    },
-    {
-      "nome": "Caucaia",
-      "id": 3
-    },
-    {
-      "nome": "Amontada",
-      "id": 4
-    },
-    {
-      "nome": "Miraima",
-      "id": 5
-    },
-    {
-      "nome": "Itapipoca",
-      "id": 6
     }
   ],
   "suporte": [
@@ -141,96 +43,6 @@
       "tipoId": 1,
       "pessoaId": 1,
       "id": 2
-    },
-    {
-      "chamadoGlpi": "12345678",
-      "data": "345678",
-      "horario": "0000",
-      "descricao": "teste5",
-      "pessoaId": 4,
-      "tipoId": 1,
-      "id": 3
-    },
-    {
-      "id": 4,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "descricao": "teste45678",
-      "tipoId": 3,
-      "pessoaId": 4,
-      "chamadoGlpi": "12345670",
-      "horario": "22:37:14",
-      "data": "22/7/2024",
-      "id": 6
-    },
-    {
-      "id": 7,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 8,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 9,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 10,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 11,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 12,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
-    },
-    {
-      "id": 13,
-      "descricao": "teste 67",
-      "tipoId": 1,
-      "pessoaId": 3,
-      "chamadoGlpi": "12334509",
-      "data": "22/7/2024",
-      "horario": "21:59:38"
     }
   ],
   "tipos": [
