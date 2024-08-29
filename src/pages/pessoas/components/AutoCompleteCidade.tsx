@@ -78,7 +78,7 @@ export const AutoCompleteCidade: React.FC<IAutoCompleteCidadeProps> = ({ isExter
                 <TextField 
                     {...params}
                     
-                    label="Cidade"
+                    label="Funcao"
                     error={!!error}
                     helperText={error}
                     />

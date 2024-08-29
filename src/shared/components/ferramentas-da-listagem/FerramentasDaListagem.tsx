@@ -7,7 +7,7 @@ interface IFerramentasDaListagemProps {
     mostrarInputBusca?: boolean;
     mostrarInputData?: boolean;
     aoMudarTextoDeBusca?: (novotexto: string) => void;
-    aoMudarTextoDaData?: (novotexto: string) => void;
+    aoMudarTextoDaData?: (novaData: string) => void;
     textoBotaoNovo?: string;
     mostrarBotaoNovo?: boolean;
     aoClicarEmNovo?: () => void;
@@ -51,7 +51,7 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
                 size="small"
                 value={textoDaData}
                 onChange={(e) => aoMudarTextoDaData?.(e.target.value)} 
-                placeholder={Environment.INPUT_DE_BUSCA}
+                placeholder='Data'
                 />
     
             )}

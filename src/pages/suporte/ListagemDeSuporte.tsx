@@ -17,17 +17,25 @@ import { Environment } from "../../shared/environment";
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
+    const fullYear =  new Date().getFullYear().toString();
+    const month = new Date().getMonth().toString();
+    const day = new Date().getDate().toString();
+
     const busca = useMemo(()=>{
         return searchParams.get('busca') || '';
     },[searchParams]);
 
     const buscaData = useMemo(()=>{
-        return searchParams.get('buscaData') || '';
+        return searchParams.get('buscaData') || (day.padStart(2, '0')+'/'+month.padStart(2, '0')+'/'+fullYear);
     },[searchParams]);
 
 
     const pagina = useMemo(()=>{
         return Number(searchParams.get('pagina') || '1');
+    },[searchParams]);
+
+    const paginaDate = useMemo(()=>{
+        return Number(searchParams.get('paginaDate') || '1');
     },[searchParams]);
 
     useEffect(() => {
@@ -49,6 +57,26 @@ import { Environment } from "../../shared/environment";
         });
         });
     },[busca, pagina])
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        debounce(() => {
+            SuporteService.getDate(paginaDate, buscaData)
+        .then((result) => {
+            setIsLoading(false);
+
+            if (result instanceof Error) {
+                alert(result.message);
+            } else {
+                console.log(result);
+
+                setTotalCount(result.totalCount);
+                setRows(result.data);
+            }
+        });
+        });
+    },[buscaData, paginaDate])
 
     const handleDelete = (id: number) => {
         if (confirm('Realmente deseja apagar?')) {
@@ -76,9 +104,9 @@ import { Environment } from "../../shared/environment";
                 textoBotaoNovo="Novo"
                 aoClicarEmNovo={() => navigate('/suporte/detalhe/novo')}
                 textoDaBusca={busca}
-                textoDaData={busca}
+                textoDaData={buscaData}
                 aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
-                aoMudarTextoDaData={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
+                aoMudarTextoDaData={texto => setSearchParams({ buscaData: texto, paginaDate: '1' }, { replace: true })}
                 />
             }>
 
@@ -122,13 +150,23 @@ import { Environment } from "../../shared/environment";
                                 </TableCell>
                             </TableRow>
                         )}
-                        {(totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHAS) && (
+                        {(totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHAS && busca!='') && (
                             <TableRow>
                                 <TableCell colSpan={3}>
                                     <Pagination
                                     page={pagina} 
                                     count={Math.ceil(totalCount/Environment.LIMITE_DE_LINHAS)} 
                                     onChange={(_, newPage) => setSearchParams({ busca, pagina: newPage.toString() },{ replace: true })} />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                        {(totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHAS && buscaData!='') && (
+                            <TableRow>
+                                <TableCell colSpan={3}>
+                                    <Pagination
+                                    page={paginaDate} 
+                                    count={Math.ceil(totalCount/Environment.LIMITE_DE_LINHAS)} 
+                                    onChange={(_, newPage) => setSearchParams({ buscaData, paginaDate: newPage.toString() },{ replace: true })} />
                                 </TableCell>
                             </TableRow>
                         )}

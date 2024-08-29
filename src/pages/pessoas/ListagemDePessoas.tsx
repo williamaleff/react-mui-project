@@ -79,8 +79,8 @@ import { Environment } from "../../shared/environment";
                     <TableHead>
                         <TableRow>
                             <TableCell width={100}>Ações</TableCell>
-                            <TableCell>Nome Completo</TableCell>
                             <TableCell>Email</TableCell>
+                            <TableCell>Nome Completo</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -95,8 +95,8 @@ import { Environment } from "../../shared/environment";
                                         <Icon>edit</Icon>
                                     </IconButton>
                                 </TableCell>
-                                <TableCell>{row.nomeCompleto}</TableCell>
                                 <TableCell>{row.email}</TableCell>
+                                <TableCell>{row.nomeCompleto}</TableCell>
                             </TableRow>
                         ))}
 

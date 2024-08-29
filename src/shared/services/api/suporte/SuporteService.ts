@@ -49,6 +49,28 @@ const getAll = async (page = 1, filter = ''): Promise<TSuporteComTotalCount | Er
     }
  };
 
+ const getDate = async (page = 1, filter = ''): Promise<TSuporteComTotalCount | Error> => {
+    try {
+        const urlRelativa = `/suporte?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&data_like=${filter}`;
+
+        const { data, headers } = await Api.get(urlRelativa);
+
+        if (data) {
+            return {
+                data,
+                totalCount: Number(headers['x-total-count'] || Environment.LIMITE_DE_LINHAS)
+            }
+        }
+
+        return new Error('Erro ao listar os registros.');
+        
+    } catch (error) {
+        console.error();
+        return new Error((error as {message: string}).message || 'Erro ao listar os registros.');
+    }
+ };
+
+
 const getById = async (id: number): Promise<IDetalheSuporte | Error> => {
     try {
         const { data } = await Api.get(`/suporte/${id}`);
@@ -101,6 +123,7 @@ const deleteById = async (id: number): Promise<void | Error> => {
 
 export const SuporteService = {
     getAll,
+    getDate,
     getById,
     create,
     updateById,
