@@ -51,7 +51,7 @@ export const DetalheDeSuporte: React.FC = () =>{
     const horarioAtual = new Date().toLocaleTimeString();
     const today = dayjs();
     const fullYear =  new Date().getFullYear().toString();
-    const month = new Date().getMonth().toString().padStart(2, '0');
+    const month = (new Date().getMonth()+1).toString().padStart(2, '0');
     const day = new Date().getDate().toString().padStart(2, '0');
     //const todayOfTheTime = dayjs(fullYear+'-'+month+'-'+day+'T'+horarioAtual); 
 

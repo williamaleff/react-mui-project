@@ -18,15 +18,15 @@ import { Environment } from "../../shared/environment";
     const [isLoading, setIsLoading] = useState(true);
 
     const fullYear =  new Date().getFullYear().toString();
-    const month = new Date().getMonth().toString();
-    const day = new Date().getDate().toString();
+    const month = (new Date().getMonth()+1).toString().padStart(2, '0');
+    const day = new Date().getDate().toString().padStart(2, '0');
 
     const busca = useMemo(()=>{
         return searchParams.get('busca') || '';
     },[searchParams]);
 
     const buscaData = useMemo(()=>{
-        return searchParams.get('buscaData') || (day.padStart(2, '0')+'/'+month.padStart(2, '0')+'/'+fullYear);
+        return searchParams.get('buscaData') || (day+'/'+month+'/'+fullYear);
     },[searchParams]);
 
 
