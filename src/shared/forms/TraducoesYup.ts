@@ -1,6 +1,6 @@
-import { setLocale } from "yup";
+import * as Yup from 'yup';
 
-setLocale({
+Yup.setLocale({
     mixed: {
         default: 'Campo não é válido',
         required: 'O campo é obrigatório',
