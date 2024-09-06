@@ -1,5 +1,5 @@
 import { Environment } from "../../../environment";
-import { Api } from "../axios-config";
+import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemPessoa {
     id: number;
@@ -26,6 +26,13 @@ const getAll = async (page = 1, filter = ''): Promise<TPessoasComTotalCount | Er
     try {
         const urlRelativa = `/pessoas?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nomeCompleto_like=${filter}`;
 
+        const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessToken) {
+            setAuthToken(JSON.parse(accessToken));
+        } else {
+            setAuthToken(null);
+        }
+        
         const { data } = await Api.get(urlRelativa);
 
         if (data) {

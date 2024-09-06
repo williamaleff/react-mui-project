@@ -1,5 +1,5 @@
 import { Environment } from "../../../environment";
-import { Api } from "../axios-config";
+import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemTipos {
     id: number;
@@ -20,8 +20,15 @@ const getAll = async (page = 1, filter = ''): Promise<TTiposComTotalCount | Erro
     try {
         const urlRelativa = `/tipos?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
 
+        const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessToken) {
+            setAuthToken(JSON.parse(accessToken));
+        } else {
+            setAuthToken(null);
+        }
+        
         const { data } = await Api.get(urlRelativa);
-
+        
         if (data) {
             return {
                 data,

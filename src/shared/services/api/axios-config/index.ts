@@ -11,4 +11,12 @@ Api.interceptors.response.use(
     (error) => errorInterceptor(error)
 );
 
-export { Api };
+const setAuthToken = (token: string | null) => {
+    if (token) {
+      Api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete Api.defaults.headers.common['Authorization'];
+    }
+  };
+
+export { Api, setAuthToken };
