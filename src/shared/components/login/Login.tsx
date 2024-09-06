@@ -29,10 +29,20 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
         .validate({ email, password }, { abortEarly: false })
         .then(dadosValidados => {
 
-            login(dadosValidados.email, dadosValidados.password)
-            .then(() => {
+        login(dadosValidados.email, dadosValidados.password)
+            .then((result) => {
                 setIsLoading(false);
-            });
+                if (result === undefined) {
+                    setEmailError('');
+                    setPasswordError('');
+                } else if(result === 'Request failed with status code 401') {
+                    setEmailError('Login ou Senha incorretos');
+                    setPasswordError('  ');
+                } else {
+                    setEmailError('Erro de conexão');
+                    setPasswordError('...');
+                }
+            })
         })
         .catch((errors: yup.ValidationError) => {
             setIsLoading(false);
@@ -87,16 +97,6 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
                              onChange={e => setPassword(e.target.value)}
                              />
  
-                <FormControlLabel
-                    control={
-                    <Checkbox
-                        name="checkedB"
-                        color="primary"
-                    />
-                    }
-                    label="Lembre-me"
-                 />
-                
                 <Button
                              disabled={isLoading}
                              variant="contained"

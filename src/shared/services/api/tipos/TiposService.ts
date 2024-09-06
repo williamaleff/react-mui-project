@@ -20,12 +20,12 @@ const getAll = async (page = 1, filter = ''): Promise<TTiposComTotalCount | Erro
     try {
         const urlRelativa = `/tipos?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
 
-        const { data, headers } = await Api.get(urlRelativa);
+        const { data } = await Api.get(urlRelativa);
 
         if (data) {
             return {
                 data,
-                totalCount: Number(headers['x-total-count'] || Environment.LIMITE_DE_LINHAS)
+                totalCount: Number(data.length || 0)
             }
         }
 

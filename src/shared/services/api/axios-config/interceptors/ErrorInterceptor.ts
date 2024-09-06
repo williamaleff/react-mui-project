@@ -6,7 +6,7 @@ export const errorInterceptor = (error: AxiosError) => {
     }
 
     if (error.response?.status === 401) {
-        //Erro de autenticação
+     //   return Promise.reject(new Error('Login ou senha incorretos'));
     }
 
     return Promise.reject(error);
