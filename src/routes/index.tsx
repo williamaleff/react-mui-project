@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Dashboard, ListagemDePessoas, DetalheDePessoas, ListagemDeSuporte, DetalheDeSuporte } from "../pages";
 import { ListagemDeFuncoes } from "../pages/funcoes/ListagemDeFuncoes";
 import { DetalheDeFuncoes } from "../pages/funcoes/DetalheDeFuncoes";
+import { DetalheDeTipos } from "../pages/tipos/DetalheDeTipos";
+import { ListagemDeTipos } from "../pages/tipos/ListagemDeTipos";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -16,19 +18,24 @@ export const AppRoutes = () => {
                 label: 'Página inicial'
             },
             {
-                icon: 'work',
-                path: '/funcoes',
-                label: 'Funcoes'
+                icon: 'computer',
+                path: '/suporte',
+                label: 'Suporte'
             },
             {
                 icon: 'people',
                 path: '/pessoas',
                 label: 'Pessoas'
+            },           
+            {
+                icon: 'work',
+                path: '/funcoes',
+                label: 'Funcoes'
             },
             {
-                icon: 'computer',
-                path: '/suporte',
-                label: 'Suporte Sap'
+                icon: 'list',
+                path: '/tipos',
+                label: 'Tipos'
             }
         ])
     }, []);
@@ -45,6 +52,9 @@ export const AppRoutes = () => {
 
             <Route path="/suporte" element={<ListagemDeSuporte />} />
             <Route path="/suporte/detalhe/:id" element={<DetalheDeSuporte /> } />
+
+            <Route path="/tipos" element={<ListagemDeTipos />} />
+            <Route path="/tipos/detalhe/:id" element={<DetalheDeTipos /> } />
 
             <Route path="*" element={<Navigate to="/pagina-inicial" />} />
         </Routes>
