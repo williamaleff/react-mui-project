@@ -6,6 +6,7 @@ import { IListagemSuporte, SuporteService } from "../../shared/services/api/supo
 import { useDebounce } from "../../shared/hooks";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { Environment } from "../../shared/environment";
+import { useLocation } from 'react-router-dom';
 
  export const ListagemDeSuporte: React.FC = () => {
 
@@ -17,18 +18,53 @@ import { Environment } from "../../shared/environment";
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fullYear =  new Date().getFullYear().toString();
-    const month = (new Date().getMonth()+1).toString().padStart(2, '0');
+
+    const getCurrentDate = () => {
+    const fullYear = new Date().getFullYear().toString();
+    const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
     const day = new Date().getDate().toString().padStart(2, '0');
+    return `${day}/${month}/${fullYear}`;
+};
+
+    const [buscaData1, setBuscaData] = useState('');
+    const location = useLocation();  // Obtém o objeto location do react-router-dom
+
+    useEffect(() => {
+        // Verifica o pathname da URL para determinar se é o link específico
+        if (location.pathname === '/suporte') {
+             // Se a data de hoje não estiver no localStorage, define a data atual
+             const storedValue = localStorage.getItem('buscaData');
+             if (!storedValue || storedValue === getCurrentDate()) {
+                 const currentDate = getCurrentDate();
+                 setBuscaData(currentDate);
+                 localStorage.setItem('buscaData', currentDate);
+             }
+        }
+    }, [location.pathname]);  // Dependência em location.pathname para detectar navegações
+
+    useEffect(() => {
+        // Inicializa buscaData com o valor do localStorage na primeira renderização
+        const storedValue = localStorage.getItem('buscaData');
+        if (storedValue) {
+            setBuscaData(storedValue);
+        }
+    }, []);  // Executado apenas uma vez na montagem do componente
+
+
+    const buscaData = useMemo(() => {
+        // Obtém o valor do parâmetro buscaData se disponível
+        const buscaDataParam = searchParams?.get('buscaData') || '';
+
+        // Se o valor do parâmetro estiver vazio, usa o valor armazenado
+        if (location.pathname === '/suporte') {
+        return buscaDataParam.trim() === '' ? buscaData1 : buscaDataParam;
+        }
+        return buscaDataParam;
+    }, [searchParams, buscaData1]);
 
     const busca = useMemo(()=>{
         return searchParams.get('busca') || '';
     },[searchParams]);
-
-    const buscaData = useMemo(()=>{
-        return searchParams.get('buscaData') || day+'/'+month+'/'+fullYear;
-    },[searchParams]);
-
 
     const pagina = useMemo(()=>{
         return Number(searchParams.get('pagina') || '1');

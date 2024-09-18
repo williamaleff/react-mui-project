@@ -5,3 +5,4 @@ export * from "./funcoes/ListagemDeFuncoes";
 export * from "./funcoes/DetalheDeFuncoes";
 export * from "./suporte/ListagemDeSuporte";
 export * from "./suporte/DetalheDeSuporte";
+export * from "./form/formBasic";

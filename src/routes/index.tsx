@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Dashboard, ListagemDePessoas, DetalheDePessoas, ListagemDeSuporte, DetalheDeSuporte } from "../pages";
 import { ListagemDeFuncoes } from "../pages/funcoes/ListagemDeFuncoes";
 import { DetalheDeFuncoes } from "../pages/funcoes/DetalheDeFuncoes";
+import { FormBasic } from "../pages/form/formBasic";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -29,6 +30,11 @@ export const AppRoutes = () => {
                 icon: 'computer',
                 path: '/suporte',
                 label: 'Suporte Sap'
+            },
+            {
+                icon:'W',
+                path: '/form',
+                label: 'FormBasic'
             }
         ])
     }, []);
@@ -45,6 +51,8 @@ export const AppRoutes = () => {
 
             <Route path="/suporte" element={<ListagemDeSuporte />} />
             <Route path="/suporte/detalhe/:id" element={<DetalheDeSuporte /> } />
+
+            <Route path="/form" element={<FormBasic />} />
 
             <Route path="*" element={<Navigate to="/pagina-inicial" />} />
         </Routes>

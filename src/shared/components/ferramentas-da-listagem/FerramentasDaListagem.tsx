@@ -1,4 +1,5 @@
 import { Box, Button, Icon, Paper, TextField, useTheme } from "@mui/material";
+import { PatternFormat } from "react-number-format";
 import { Environment } from "../../environment";
 
 interface IFerramentasDaListagemProps {
@@ -47,11 +48,27 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
     
             )}
             {mostrarInputData && (
-                <TextField
-                size="small"
-                value={textoDaData}
-                onChange={(e) => aoMudarTextoDaData?.(e.target.value)} 
-                placeholder='Data'
+                <PatternFormat
+                    format='##/##/####'
+                    mask='_'
+                    allowEmptyFormatting
+
+                    patternChar='#'
+                    type="text"
+                    displayType='input'
+
+                    isAllowed={
+                        (values)=>{
+                            if(values.value.length > 8) return false;
+                            return true;
+                        }
+                    }
+
+                    customInput={TextField}
+                    size="small"
+                    value={textoDaData}
+                    onChange={(e) => aoMudarTextoDaData?.(e.target.value)} 
+                    placeholder='Data'
                 />
     
             )}
