@@ -15,16 +15,6 @@
       "informacoes": "Adjunto"
     }
   ],
-  "funcoes": [
-    {
-      "nome": "Policial Penal",
-      "id": 1
-    },
-    {
-      "nome": "TI",
-      "id": 2
-    }
-  ],
   "suporte": [
     {
       "id": 1,
@@ -54,7 +44,116 @@
       "horario": "20:14:00"
     }
   ],
-  "tipos": [
+  "auth": {
+    "token": "aaaaaa.bbbbbbb.ccccccc"
+  },
+  "chamado": [
+    {
+      "id": 1,
+      "tipoId": 1,
+      "descricao": "Erro no link da videoconferencia",
+      "statusId": 1,
+      "prioridadeId": 1,
+      "dataCriacao": "17/08/2024T14:00",
+      "dataAtualizacao": "17/08/2024T14:00",
+      "dataFechamento": "17/08/2024T14:00",
+      "clienteId": 1,
+      "agenteId": 1,
+      "chamadoGlpi": "123456780",
+      "anexo": ""
+    }
+  ],
+  "agente": [
+    {
+      "id": 1,
+      "nome": "Silveira",
+      "email": "sera@sap",
+      "funcaoId": 1,
+      "telefone":"",
+      "dataContratacao": "17/08/2024T14:00",
+      "dataCriacao": "17/08/2024T14:00",
+      "nivelId": 1,
+      "outros": "",
+      "foto": "",
+      "anexo": ""
+    }
+  ],
+  "cliente": [
+    {
+      "id": 1,
+      "nome": "Eli",
+      "email": "eli@sap",
+      "funcaoId": 1,
+      "dataCriacao": "17/08/2024T14:00",
+      "telefone": "88999674536",
+      "outros": "",
+      "nivelId": 1,
+      "foto": "",
+      "anexo": ""
+    }
+  ], 
+  "comentario": [
+    {
+      "id": 1,
+      "chamadoId": 1,
+      "agenteId": 1,
+      "clienteId": "",
+      "dataCriacao": "17/08/2024T14:00",
+      "comentario": "testando...."
+    }
+  ],
+  "historico": [
+    {
+      "id": 1,
+      "chamadoId": 1,
+      "statusAnteriorId":1,
+      "statusNovoId": 2,
+      "data": "17/08/2024T14:00"
+    }
+  ], 
+  "status": [
+    {
+      "id": 1,
+      "nome": "Aberto"
+    },
+    {
+      "id": 2,
+      "nome": "Em andamento"
+    },
+    {
+      "id": 3,
+      "nome": "Fechado"
+    }
+  ],
+  "prioridade": [
+    {
+      "id": 1,
+      "nome": "Baixa"
+    },
+    {
+      "id": 2,
+      "nome": "Média"
+    },
+    {
+      "id": 3,
+      "nome": "Alta"
+    },
+    {
+      "id": 4,
+      "nome": "Crítica"
+    }
+  ], 
+  "nivel": [
+    {
+      "id": 1,
+      "nome": "Comum"
+    },
+    {
+      "id": 2,
+      "nome": "Administrador"
+    }
+  ],
+  "tipo": [
     {
       "nome": "Hardware/Software",
       "id": 1
@@ -80,7 +179,14 @@
       "id": 6
     }
   ],
-  "auth": {
-    "token": "aaaaaa.bbbbbbb.ccccccc"
-  }
+  "funcoes": [
+    {
+      "nome": "Policial Penal",
+      "id": 1
+    },
+    {
+      "nome": "TI",
+      "id": 2
+    }
+  ]
 }

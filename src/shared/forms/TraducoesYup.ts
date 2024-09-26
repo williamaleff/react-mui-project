@@ -4,6 +4,7 @@ setLocale({
     mixed: {
         default: 'Campo não é válido',
         required: 'O campo é obrigatório',
+        notType: 'O campo deve conter um número'
     },
     string: {
         email: () => 'O campo precisa conter um email válido',
