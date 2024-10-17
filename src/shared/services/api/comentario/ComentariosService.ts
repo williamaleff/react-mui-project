@@ -3,12 +3,20 @@ import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemComentarios {
     id: number;
-    nome: string;
+    chamadoId: number;
+    agenteId: number;
+    clienteId: string;
+    dataCriacao: string;
+    comentario: string;
 }
 
 export interface IDetalheComentarios {
     id: number;
-    nome: string;
+    chamadoId: number;
+    agenteId: number;
+    clienteId: string;
+    dataCriacao: string;
+    comentario: string;
 }
 
 type TComentariosComTotalCount = {

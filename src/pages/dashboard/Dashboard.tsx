@@ -2,59 +2,92 @@ import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import { FerramentasDaListagem} from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useState } from "react";
-import { FuncoesService } from "../../shared/services/api/funcoes/FuncoesService";
-import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
-import { SuporteService } from "../../shared/services/api/suporte/SuporteService";
+import { AgenteService } from "../../shared/services/api/agente/AgenteService";
+import { ClienteService } from "../../shared/services/api/cliente/ClienteService";
+import { ChamadoService } from "../../shared/services/api/chamado/ChamadoService";
+import Chart from "react-google-charts";
+
+interface TipoIdCount {
+    tipoId: string;
+    count: number;
+  }
 
 export const Dashboard = () => {
 
-    const [isLoadingFuncoes, setIsLoadingFuncoes] = useState(true);
-    const [totalCountFuncoes, setTotalCountFuncoes] = useState(0);
-    const [isLoadingPessoas, setIsLoadingPessoas] = useState(true);
-    const [totalCountPessoas, setTotalCountPessoas] = useState(0);
-    const [isLoadingSuportes, setIsLoadingSuportes] = useState(true);
-    const [totalCountSuportes, setTotalCountSuportes] = useState(0);
+    const [isLoadingAgente, setIsLoadingAgente] = useState(true);
+    const [totalCountAgente, setTotalCountAgente] = useState(0);
+    const [isLoadingCliente, setIsLoadingCliente] = useState(true);
+    const [totalCountCliente, setTotalCountCliente] = useState(0);
+    const [isLoadingChamado, setIsLoadingChamado] = useState(true);
+    const [totalCountChamado, setTotalCountChamado] = useState(0);
+    const [hasFetchedData, setHasFetchedData] = useState(false);
 
+    const [data, setData] = useState<(string | number | { role: string })[][]>([
+        ["Tipos", "Chamados", { role: "style" }],
+    ]);
 
     useEffect(() => {
-        setIsLoadingFuncoes(true);
-        setIsLoadingPessoas(true);
-        setIsLoadingSuportes(true);
+        const fetchData = async () => {
+        if (hasFetchedData) return;
+
+        setIsLoadingAgente(true);
+        setIsLoadingCliente(true);
+        setIsLoadingChamado(true);
 
     
-        FuncoesService.getAll(1)
+        AgenteService.getAll(1)
         .then((result) => {
-            setIsLoadingFuncoes(false);
+            setIsLoadingAgente(false);
 
             if (result instanceof Error) {
                 alert(result.message);
             } else {
-                setTotalCountFuncoes(result.totalCount);
+                setTotalCountAgente(result.totalCount);
             }
         });
         
-        PessoasService.getAll(1)
+        ClienteService.getAll(1)
         .then((result) => {
-            setIsLoadingPessoas(false);
+            setIsLoadingCliente(false);
 
             if (result instanceof Error) {
                 alert(result.message);
             } else {
-                setTotalCountPessoas(result.totalCount);
+                setTotalCountCliente(result.totalCount);
             }
         });
 
-        SuporteService.getAll(1)
+        ChamadoService.getAll(1)
         .then((result) => {
-            setIsLoadingSuportes(false);
+            setIsLoadingChamado(false);
 
             if (result instanceof Error) {
                 alert(result.message);
             } else {
-                setTotalCountSuportes(result.totalCount);
+
+                const tipoIdCounts = result.data.reduce<Record<string, number>>((acc, item) => {
+                    acc[item.tipoId] = (acc[item.tipoId] || 0) + 1;
+                    return acc;
+                  }, {});
+
+                  const uniqueTipoIdCounts: TipoIdCount[] = Object.entries(tipoIdCounts).map(([tipoId, count]) => ({
+                    tipoId,
+                    count
+                  }));
+
+                  console.log(uniqueTipoIdCounts); // Para depuração
+                  const chartData = uniqueTipoIdCounts.map((item) => [item.tipoId, item.count, 'blue']);
+                console.log(data[0][0])
+                setData((prevData)=>[...prevData, ...chartData]);
+                setTotalCountChamado(result.totalCount);
+                setHasFetchedData(true);
+                console.log(data[0])
             }
         });
-        
+    }
+
+    fetchData();
+
     },[])
 
 
@@ -66,82 +99,124 @@ export const Dashboard = () => {
             mostrarBotaoNovo={false} />
         }>
             <Box width='100%' display='flex'>
+
                 <Grid container margin={2}>
                     <Grid item container spacing={2}>
+                        <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" align="center">
+                                    Chamados Pendentes
+                                </Typography>
+                                <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
+                                {!isLoadingChamado &&(
+                                    <Typography variant="h3">
+                                        {totalCountChamado}
+                                    </Typography>
+                                    )}
+                                    {isLoadingChamado &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" align="center">
+                                    Clientes
+                                </Typography>
+                                <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
+                                {!isLoadingCliente &&(
+                                    <Typography variant="h3">
+                                        {totalCountCliente}
+                                    </Typography>
+                                    )}
+                                    {isLoadingCliente &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" align="center">
+                                    Funcionários
+                                </Typography>
+                                <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
+                                {!isLoadingAgente &&(
+                                    <Typography variant="h3">
+                                        {totalCountAgente}
+                                    </Typography>
+                                    )}
+                                    {isLoadingAgente &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" align="center">
+                                    Chamados
+                                </Typography>
+                                <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
+                                {!isLoadingChamado &&(
+                                    <Typography variant="h3">
+                                        {totalCountChamado}
+                                    </Typography>
+                                    )}
+                                    {isLoadingChamado &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                        </Grid>
+                    </Grid>
+                </Grid>
 
-                        
-                    <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+              </Box>
+            <Box width='100%' display='flex'>
+            <Grid container margin={2}>
+                    <Grid item container spacing={2}>        
+
+                        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                             <Card>
                             <CardContent>
-                                    <Typography variant="h5" align="center">
-                                        Total de suportes
+                            <Typography variant="h5" align="center">
+                                        Total de chamados
                                     </Typography>
 
                                     <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
-                                    {!isLoadingSuportes &&(
-                                    <Typography variant="h1">
-                                        {totalCountSuportes}
-                                    </Typography>
-                                    )}
-                                    {isLoadingSuportes &&(
-                                    <Typography variant="h6">
-                                        Carregando...
-                                    </Typography>
-                                    )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        
-
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h5" align="center">
-                                        Total de pessoas
-                                    </Typography>
-
-                                    <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
-                                    {!isLoadingPessoas &&(
-                                    <Typography variant="h1">
-                                        {totalCountPessoas}
-                                    </Typography>
-                                    )}
-                                    {isLoadingPessoas &&(
-                                    <Typography variant="h6">
-                                        Carregando...
-                                    </Typography>
-                                    )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        
-                        <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                            <Card>
-                            <CardContent>
-                                    <Typography variant="h5" align="center">
-                                        Total de funcoes
-                                    </Typography>
-
-                                    <Box padding={6} display='flex' justifyContent='center' alignItems='center'>
-                                    {!isLoadingFuncoes &&(
-                                    <Typography variant="h1">
-                                        {totalCountFuncoes}
-                                    </Typography>
-                                    )}
-                                    {isLoadingFuncoes &&(
-                                    <Typography variant="h6">
-                                        Carregando...
-                                    </Typography>
-                                    )}
-                                    </Box>
-                                </CardContent>
+                                 
+                        <Chart
+                        chartType="ColumnChart"
+                        width="120%"
+                        height="100%"
+                        data={data}
+                        />
+                        </Box>
+                         </CardContent>
                             </Card>
                         </Grid>
 
                     </Grid>
                 </Grid>
+              
             </Box>
         </LayoutBaseDePagina>
     );

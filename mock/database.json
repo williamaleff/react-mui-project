@@ -50,32 +50,112 @@
   "chamado": [
     {
       "id": 1,
+      "descricao": "Erro no link da videoconferencia 2",
+      "chamadoGlpi": "12345678045",
+      "dataCriacao": "2024-10-10T22:23",
       "tipoId": 1,
-      "descricao": "Erro no link da videoconferencia",
+      "clienteId": 1,
       "statusId": 1,
       "prioridadeId": 1,
-      "dataCriacao": "17/08/2024T14:00",
       "dataAtualizacao": "17/08/2024T14:00",
       "dataFechamento": "17/08/2024T14:00",
-      "clienteId": 1,
       "agenteId": 1,
-      "chamadoGlpi": "123456780",
-      "anexo": ""
+      "anexo": " "
+    },
+    {
+      "tipoId": 1,
+      "descricao": "teste",
+      "statusId": 0,
+      "prioridadeId": 0,
+      "dataCriacao": "2024-10-10T22:28:59",
+      "dataAtualizacao": "2024-10-10T22:28:59",
+      "dataFechamento": " ",
+      "clienteId": 1,
+      "agenteId": 0,
+      "chamadoGlpi": " 4567",
+      "anexo": " ",
+      "id": 2
+    },
+    {
+      "id": 3,
+      "descricao": "teste",
+      "chamadoGlpi": " ",
+      "dataCriacao": "2024-10-10T22:31:45",
+      "tipoId": 2,
+      "clienteId": 2,
+      "statusId": 0,
+      "prioridadeId": 0,
+      "dataAtualizacao": "2024-10-10T22:31:45",
+      "dataFechamento": " ",
+      "agenteId": 0,
+      "anexo": " "
     }
   ],
   "agente": [
     {
-      "id": 1,
-      "nome": "Silveira",
-      "email": "sera@sap",
+      "id": 6,
+      "nome": "Juan Francisco García Flores",
+      "email": "ejemplo@ejemplo.mx",
+      "dataContratacao": "2024-10-03T14:22",
       "funcaoId": 1,
-      "telefone":"",
-      "dataContratacao": "17/08/2024T14:00",
-      "dataCriacao": "17/08/2024T14:00",
-      "nivelId": 1,
-      "outros": "",
-      "foto": "",
-      "anexo": ""
+      "telefone": "(00) 6 5765 - 7657",
+      "dataCriacao": "2024-10-03T14:21:57",
+      "nivelId": 0,
+      "outros": " ",
+      "foto": " ",
+      "anexo": " "
+    },
+    {
+      "nome": "Gottfried Wilhelm Leibniz",
+      "email": "test@beispiel.de",
+      "funcaoId": 2,
+      "telefone": "(99) 9 9999 - 9999",
+      "dataContratacao": "2024-10-03T14:22",
+      "dataCriacao": "2024-10-03T14:22:36",
+      "nivelId": 0,
+      "outros": " ",
+      "foto": " ",
+      "anexo": " ",
+      "id": 7
+    },
+    {
+      "nome": "Juan Francisco García Flores",
+      "email": "test@beispiel.de",
+      "funcaoId": 1,
+      "telefone": "(00) 0 0000 - 0000",
+      "dataContratacao": "2024-10-03T14:23",
+      "dataCriacao": "2024-10-03T14:22:57",
+      "nivelId": 0,
+      "outros": " ",
+      "foto": " ",
+      "anexo": " ",
+      "id": 8
+    },
+    {
+      "nome": "teste",
+      "email": "teste@teste",
+      "funcaoId": 1,
+      "telefone": "(00) 0 0000 - 0000",
+      "dataContratacao": "2024-10-03T16:34",
+      "dataCriacao": "2024-10-03T16:29:43",
+      "nivelId": 0,
+      "outros": " ",
+      "foto": " ",
+      "anexo": " ",
+      "id": 9
+    },
+    {
+      "nome": "Juan Francisco García Flores",
+      "email": "ejemplo@ejemplo.mx",
+      "funcaoId": 1,
+      "telefone": "(99) 9 9999 - 9999",
+      "dataContratacao": "2024-10-03T16:49",
+      "dataCriacao": "2024-10-03T16:49:27",
+      "nivelId": 0,
+      "outros": " ",
+      "foto": " ",
+      "anexo": " ",
+      "id": 10
     }
   ],
   "cliente": [
@@ -90,8 +170,20 @@
       "nivelId": 1,
       "foto": "",
       "anexo": ""
+    },
+    {
+      "id": 2,
+      "nome": "Brasil",
+      "email": "eli@sap",
+      "funcaoId": 1,
+      "dataCriacao": "17/08/2024T14:00",
+      "telefone": "88999674536",
+      "outros": "",
+      "nivelId": 1,
+      "foto": "",
+      "anexo": ""
     }
-  ], 
+  ],
   "comentario": [
     {
       "id": 1,
@@ -106,11 +198,11 @@
     {
       "id": 1,
       "chamadoId": 1,
-      "statusAnteriorId":1,
+      "statusAnteriorId": 1,
       "statusNovoId": 2,
       "data": "17/08/2024T14:00"
     }
-  ], 
+  ],
   "status": [
     {
       "id": 1,
@@ -142,7 +234,7 @@
       "id": 4,
       "nome": "Crítica"
     }
-  ], 
+  ],
   "nivel": [
     {
       "id": 1,
@@ -153,7 +245,7 @@
       "nome": "Administrador"
     }
   ],
-  "tipo": [
+  "tipos": [
     {
       "nome": "Hardware/Software",
       "id": 1

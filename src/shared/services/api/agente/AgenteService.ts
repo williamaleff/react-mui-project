@@ -3,18 +3,30 @@ import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemAgente {
     id: number;
+    nome: string;
     email: string;
     funcaoId: number;
-    nomeCompleto: string;
-    informacoes: string;
+    telefone: string;
+    dataContratacao: string;
+    dataCriacao: string;
+    nivelId: number;
+    outros: string;
+    foto: string;
+    anexo: string;
 }
 
 export interface IDetalheAgente {
     id: number;
+    nome: string;
     email: string;
     funcaoId: number;
-    nomeCompleto: string;
-    informacoes: string;
+    telefone: string;
+    dataContratacao: string;
+    dataCriacao: string;
+    nivelId: number;
+    outros: string;
+    foto: string;
+    anexo: string;
 }
 
 type TAgenteComTotalCount = {

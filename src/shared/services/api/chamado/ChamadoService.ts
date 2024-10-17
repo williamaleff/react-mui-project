@@ -5,21 +5,30 @@ export interface IListagemChamado {
     id: number;
     tipoId: number;
     descricao: string;
-    pessoaId: number;
-    horario: string;
-    data: string;
+    statusId: number;
+    prioridadeId: number;    
+    dataCriacao: string;
+    dataAtualizacao: string;
+    dataFechamento: string;
+    clienteId: number;
+    agenteId: number;
     chamadoGlpi: string;
-
+    anexo: string;
 }
 
 export interface IDetalheChamado {
     id: number;
     tipoId: number;
     descricao: string;
-    pessoaId: number;
-    horario: string;
-    data: string;
+    statusId: number;
+    prioridadeId: number;    
+    dataCriacao: string;
+    dataAtualizacao: string;
+    dataFechamento: string;
+    clienteId: number;
+    agenteId: number;
     chamadoGlpi: string;
+    anexo: string;
 
 }
 

@@ -3,12 +3,18 @@ import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemHistorico {
     id: number;
-    nome: string;
+    chamadoId: number;
+    statusAnteriorId:number;
+    statusNovoId: number;
+    data: string;
 }
 
 export interface IDetalheHistorico {
     id: number;
-    nome: string;
+    chamadoId: number;
+    statusAnteriorId:number;
+    statusNovoId: number;
+    data: string;
 }
 
 type THistoricoComTotalCount = {

@@ -14,7 +14,7 @@ export const Environment = {
     /**
      * Url base de consulta dos dados dessa aplicação
      */
-    URL_BASE: 'http://localhost:3333'
+    URL_BASE: 'http://localhost:8989'
     //Usando mock: http://localhost:3333
     //Usando SpringBoot: http://192.168.14.198:8000
     //testando auth: http://localhost:8989

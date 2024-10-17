@@ -3,18 +3,28 @@ import { Api, setAuthToken } from "../axios-config";
 
 export interface IListagemCliente {
     id: number;
+    nome: string;
     email: string;
     funcaoId: number;
-    nomeCompleto: string;
-    informacoes: string;
+    dataCriacao: string;
+    telefone: string;
+    outros: string;
+    nivelId: number;
+    foto: string;
+    anexo: string;
 }
 
 export interface IDetalheCliente {
     id: number;
+    nome: string;
     email: string;
     funcaoId: number;
-    nomeCompleto: string;
-    informacoes: string;
+    dataCriacao: string;
+    telefone: string;
+    outros: string;
+    nivelId: number;
+    foto: string;
+    anexo: string;
 }
 
 type TClienteComTotalCount = {
