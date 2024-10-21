@@ -30,6 +30,8 @@ export const DetalheDeChamado: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [busca, setBusca] = useState("");
   const [nome, setNome] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [cliente, setCliente] = useState('');
 
   const navigate = useNavigate();
   const {
@@ -68,7 +70,7 @@ export const DetalheDeChamado: React.FC = () => {
               alert(result.message);
               navigate('/chamado');                    
           } else {
-              setNome(busca || result.descricao);
+              setNome(tipo || result.descricao);
 
               Object.entries(result).forEach( ([chave, valor]) => {
                 setValue(chave as keyof TFormDataChamado, valor)} )
@@ -201,8 +203,8 @@ export const DetalheDeChamado: React.FC = () => {
                   name="tipoId"
                   errors={errors}
                   isLoading={isLoading}
-                  setBusca={setBusca}
-                  busca={busca}
+                  setBusca={setTipo}
+                  busca={tipo}
                 />
               </Grid>
             </Grid>
@@ -229,6 +231,8 @@ export const DetalheDeChamado: React.FC = () => {
                   name="clienteId"
                   errors={errors}
                   isLoading={isLoading}
+                  setBusca={setCliente}
+                  busca={cliente}
                 />
               </Grid>
             </Grid>

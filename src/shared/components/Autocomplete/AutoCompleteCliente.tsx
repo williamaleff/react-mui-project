@@ -15,6 +15,9 @@ interface IAutoCompleteClienteProps {
     name: string; // Nome do campo
     errors: any; // Use o tipo correto para erros
     isLoading: boolean;
+    setBusca: (value: string) => void;
+    busca: string;
+    defaultValue?: number;
 }
 
 export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
@@ -22,10 +25,11 @@ export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
     name,
     errors,
     isLoading,
+    busca,
+    setBusca,
 }) => {
     const [selectedIdCliente, setSelectedIdCliente] = useState<number | undefined>();
     const [opcoesCliente, setOpcoesCliente] = useState<TAutoCompleteOption[]>([]);
-    const [localBusca, setLocalBusca] = useState('');
 
     const useDebounceCliente = (callback: (...args: any[]) => void, delay: number) => {
         const debouncedCallback = useCallback((...args: any[]) => {
@@ -39,7 +43,7 @@ export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
     };    
 
     const fetchDataCliente = useCallback(() => {
-        ClienteService.getAll(1, localBusca)
+        ClienteService.getAll(1, busca)
             .then((result) => {
                 if (result instanceof Error) {
                     console.error("Erro ao buscar dados:", result);
@@ -47,14 +51,14 @@ export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
                     setOpcoesCliente(result.data.map(funcao => ({ id: funcao.id, label: funcao.nome })));
                 }
             });
-    }, [localBusca]);
+    }, [busca]);
 
     const debouncedFetchDataCliente = useDebounceCliente(fetchDataCliente, 300); // 300ms de delay
 
     useEffect(() => {
         //setIsLoading(true);
         debouncedFetchDataCliente();
-    }, [localBusca, debouncedFetchDataCliente]);
+    }, [busca, debouncedFetchDataCliente]);
     
     const autoCompleteSelectedOptionCliente = useMemo(() => {
         if(!selectedIdCliente) return null;
@@ -72,7 +76,7 @@ export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedIdCliente(field.value);
+                    setSelectedIdCliente(Number(field.value));
                 }, [field.value]);
 
                 return(
@@ -88,9 +92,9 @@ export const AutoCompleteCliente: React.FC<IAutoCompleteClienteProps> = ({
                     onChange={(_, newValue) => {
                         field.onChange(newValue ? newValue.id : undefined);
                         setSelectedIdCliente(newValue ? newValue.id : undefined);
-                        setLocalBusca(''); // Limpa a busca quando a opção é selecionada
+                        setBusca(''); // Limpa a busca quando a opção é selecionada
                     }}
-                    onInputChange={(_, newValue) => setLocalBusca(newValue)}
+                    onInputChange={(_, newValue) => setBusca(newValue)}
                     options={opcoesCliente}
                     getOptionLabel={(option) => option.label}
                     renderInput={(params) => (

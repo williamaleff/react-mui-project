@@ -78,7 +78,7 @@ export const AutoCompletePrioridade: React.FC<IAutoCompletePrioridadeProps> = ({
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedId(field.value);
+                    setSelectedId(Number(field.value));
                 }, [field.value]);
 
                 return(

@@ -1,5 +1,3 @@
-// src/shared/components/AutoCompleteTipos.tsx
-
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import { Controller } from 'react-hook-form';
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -27,7 +25,6 @@ export const AutoCompleteTipos: React.FC<IAutoCompleteTiposProps> = ({
     isLoading,
     setBusca,
     busca,
-    defaultValue
 }) => {
     const [selectedId, setSelectedId] = useState<number | undefined>();
     const [opcoes, setOpcoes] = useState<TAutoCompleteOption[]>([]);
@@ -50,6 +47,7 @@ export const AutoCompleteTipos: React.FC<IAutoCompleteTiposProps> = ({
                     console.error("Erro ao buscar dados:", result);
                 } else {
                     setOpcoes(result.data.map(funcao => ({ id: funcao.id, label: funcao.nome })));
+                    
                 }
             });
     }, [busca]);
@@ -74,11 +72,10 @@ export const AutoCompleteTipos: React.FC<IAutoCompleteTiposProps> = ({
         <Controller
             name={name}
             control={control}
-            defaultValue={defaultValue}
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedId(field.value);
+                    setSelectedId(Number(field.value));
                 }, [field.value]);
 
                 return(

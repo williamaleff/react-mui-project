@@ -75,7 +75,7 @@ export const AutoCompleteFuncoes: React.FC<IAutoCompleteFuncoesProps> = ({
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedId(field.value);
+                    setSelectedId(Number(field.value));
                 }, [field.value]);
 
                 return(

@@ -12,7 +12,7 @@ type TAutoCompleteOption = {
 
 interface IAutoCompleteAgenteProps {
     control: any; // Use o tipo correto para control
-    name: string; // Nome do campo
+    name: string;
     errors: any; // Use o tipo correto para erros
     isLoading: boolean;
     setBusca: (value: string) => void;
@@ -78,7 +78,7 @@ export const AutoCompleteAgente: React.FC<IAutoCompleteAgenteProps> = ({
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedId(field.value);
+                    setSelectedId(Number(field.value));
                 }, [field.value]);
 
                 return(

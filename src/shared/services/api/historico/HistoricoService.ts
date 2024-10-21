@@ -33,12 +33,12 @@ const getAll = async (page = 1, filter = ''): Promise<THistoricoComTotalCount | 
             setAuthToken(null);
         }
 
-        const { data } = await Api.get(urlRelativa);
+        const { data, headers } = await Api.get(urlRelativa);
         
         if (data) {
             return {
                 data,
-                totalCount: Number(data.length || 0)
+                totalCount: Number(headers['x-total-count'] || Environment.LIMITE_DE_LINHAS)
             }
         }
 

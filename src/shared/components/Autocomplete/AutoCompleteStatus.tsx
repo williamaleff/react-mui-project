@@ -78,7 +78,7 @@ export const AutoCompleteStatus: React.FC<IAutoCompleteStatusProps> = ({
             render={({ field }) => {
 
                 useEffect(() => {
-                    setSelectedId(field.value);
+                    setSelectedId(Number(field.value));
                 }, [field.value]);
 
                 return(

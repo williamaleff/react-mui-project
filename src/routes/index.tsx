@@ -40,7 +40,7 @@ export const AppRoutes = () => {
                 label: 'Funcoes'
             },
             {
-                icon: 'T',
+                icon: 'support',
                 path: '/tipos',
                 label: 'Tipos'
             }
