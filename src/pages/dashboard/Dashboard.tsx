@@ -117,7 +117,7 @@ export const Dashboard = () => {
                         <Card>
                             <CardContent>
                                 <Typography variant="h6" align="center">
-                                    Chamados Pendentes
+                                    Pendentes
                                 </Typography>
                                 <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
                                 {!isLoadingChamado &&(
@@ -197,14 +197,6 @@ export const Dashboard = () => {
                             </CardContent>
                         </Card>
                         </Grid>
-                    </Grid>
-                </Grid>
-
-              </Box>
-            <Box width='100%' display='flex' height='60%'>
-            <Grid container margin={2}>
-                    <Grid item container spacing={2}>        
-
                         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                             <Card>
                             <CardContent>

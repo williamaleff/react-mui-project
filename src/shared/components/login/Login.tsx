@@ -1,4 +1,4 @@
-import { Paper, Avatar, Box, Button, Checkbox, CircularProgress, FormControlLabel, Link, TextField, Typography } from "@mui/material";
+import { Paper, Avatar, Box, Button, CircularProgress, Link, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "../../contexts";
 import { useState } from "react";
 import * as yup from 'yup';
