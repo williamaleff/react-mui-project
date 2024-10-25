@@ -65,16 +65,34 @@ const getAll = async (page = 1, filter = ''): Promise<TChamadoComTotalCount | Er
     }
  };
 
- const getDate = async (page = 1, filter = ''): Promise<TChamadoComTotalCount | Error> => {
+ const getDate = async (page = 1, filter = '', filter2 = ''): Promise<TChamadoComTotalCount | Error> => {
     try {
-        const urlRelativa = `/chamado?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&data_like=${filter}`;
 
-        const { data } = await Api.get(urlRelativa);
+        if(filter.length >= 16){
+
+         filter = filter.substring(0, filter.length - 9)
+
+            if(filter2.length > 16 ){
+               filter2 = filter2.substring(0, filter2.length - 9)
+            }
+                
+        }
+
+        const urlRelativa = `/data?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&data_like=${filter}&data_like2=${filter2}`;
+
+        const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessToken) {
+            setAuthToken(JSON.parse(accessToken));
+        } else {
+            setAuthToken(null);
+        }
+
+        const { data, headers } = await Api.get(urlRelativa);
 
         if (data) {
             return {
                 data,
-                totalCount: Number(data.length || 0)
+                totalCount: Number(headers['x-total-count'] || Environment.LIMITE_DE_LINHAS)
             }
         }
 

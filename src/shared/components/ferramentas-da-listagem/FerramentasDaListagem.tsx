@@ -10,8 +10,11 @@ interface IFerramentasDaListagemProps {
     aoMudarTextoDeBusca?: (novotexto: string) => void;
     aoMudarTextoDaData?: (novaData: string) => void;
     textoBotaoNovo?: string;
+    textoBotaoImpressao?: string;
     mostrarBotaoNovo?: boolean;
+    mostrarBotaoImpressao?: boolean;
     aoClicarEmNovo?: () => void;
+    aoClicarEmImpressao?: () => void;
 }
 
 export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
@@ -21,8 +24,11 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
     aoMudarTextoDeBusca,
     aoMudarTextoDaData,
     aoClicarEmNovo,
+    aoClicarEmImpressao,
     textoBotaoNovo = "Novo",
+    textoBotaoImpressao = "Imprimir",
     mostrarBotaoNovo = true,
+    mostrarBotaoImpressao = false,
     mostrarInputData = false
 }) => {
     const theme = useTheme();
@@ -75,6 +81,15 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
 
 
             <Box flex={1} display="flex" justifyContent="end">
+                {mostrarBotaoImpressao &&(
+                    <Button
+                    color="secondary"
+                    disableElevation
+                    variant="contained"
+                    onClick={aoClicarEmImpressao}
+                    startIcon={<Icon>print</Icon>}
+                    >{textoBotaoImpressao}</Button>
+                )}
                 {mostrarBotaoNovo &&(
                     <Button
                     color="primary"

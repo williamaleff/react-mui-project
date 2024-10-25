@@ -2,7 +2,6 @@ import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import { FerramentasDaListagem} from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useRef, useState } from "react";
-import { AgenteService } from "../../shared/services/api/agente/AgenteService";
 import { TiposService } from "../../shared/services/api/tipos/TiposService";
 import { ChamadoService } from "../../shared/services/api/chamado/ChamadoService";
 import Chart from "react-google-charts";
@@ -20,10 +19,23 @@ const colorScheme = [
 
 export const Dashboard = () => {
 
-    const [isLoadingAgente, setIsLoadingAgente] = useState(true);
-    const [totalCountAgente, setTotalCountAgente] = useState(0);
-    const [isLoadingTipos, setIsLoadingTipos] = useState(true);
-    const [totalCountTipos, setTotalCountTipos] = useState(0);
+    /////////////////DATA//////////////////////////////////////
+
+const horarioAtual = new Date().toLocaleTimeString();
+const fullYear = new Date().getFullYear().toString();
+const month = (new Date().getMonth() + 1).toString().padStart(2, "0");
+const day = new Date().getDate().toString().padStart(2, "0");
+const todayOfTheTime =
+  fullYear + "-" + month + "-" + day + "T" + horarioAtual;
+const DayOneOfMonth =
+fullYear + "-" + month + "-" + "01"
+
+//////////////////////////////////////////////////////////
+
+    const [isLoadingAgente, setIsLoadingMonth] = useState(true);
+    const [totalCountMonth, setTotalCountMonth] = useState(0);
+    const [isLoadingTipos, setIsLoadingDay] = useState(true);
+    const [totalCountDay, setTotalCountDay] = useState(0);
     const [isLoadingChamado, setIsLoadingChamado] = useState(true);
     const [totalCountChamado, setTotalCountChamado] = useState(0);
     const hasFetchedData = useRef(false);
@@ -34,27 +46,34 @@ export const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoadingAgente(true);
-            setIsLoadingTipos(true);
+            setIsLoadingMonth(true);
+            setIsLoadingDay(true);
             setIsLoadingChamado(true);
 
             try {
-                const [agenteResult, tiposResult, chamadoResult] = await Promise.all([
-                    AgenteService.getAll(1),
+                const [MonthResult, tiposResult, DayResult, chamadoResult] = await Promise.all([
+                    ChamadoService.getDate(1, todayOfTheTime, DayOneOfMonth),
                     TiposService.getAll(1),
+                    ChamadoService.getDate(1, todayOfTheTime),
                     ChamadoService.getAll(1),
                 ]);
 
-                if (!(agenteResult instanceof Error)) {
-                    setTotalCountAgente(agenteResult.totalCount);
+                if (!(DayResult instanceof Error)) {
+                    setTotalCountDay(DayResult.totalCount);
                 } else {
-                    alert(agenteResult.message);
+                    alert(DayResult.message);
                 }
+
+                if (!(MonthResult instanceof Error)) {
+                    setTotalCountMonth(MonthResult.totalCount);
+                } else {
+                    alert(MonthResult.message);
+                }
+
 
                 if (tiposResult instanceof Error) {
                     alert(tiposResult.message);
                 } else {
-                    setTotalCountTipos(tiposResult.totalCount);
                     
                     const tipoMap = tiposResult.data.reduce<Record<string, string>>((acc, tipo) => {
                         acc[tipo.id] = tipo.nome; 
@@ -84,15 +103,16 @@ export const Dashboard = () => {
                         setData((prevData) => [...prevData, ...chartData]);
                         hasFetchedData.current = true; 
                     }
-
+                    
+                    
                     setTotalCountChamado(chamadoResult.totalCount);
                 }
             }
             } catch (error) {
                 alert("Erro ao buscar dados: " + (error as Error).message);
             } finally {
-                setIsLoadingAgente(false);
-                setIsLoadingTipos(false);
+                setIsLoadingMonth(false);
+                setIsLoadingDay(false);
                 setIsLoadingChamado(false);
             }
         };
@@ -106,7 +126,10 @@ export const Dashboard = () => {
         titulo="Página Inicial" 
         barraDeFerramentas={
         <FerramentasDaListagem
-            mostrarBotaoNovo={false} />
+            mostrarBotaoNovo={false} 
+            mostrarBotaoImpressao={true}    
+        />
+
         }>
             <Box height='100%'>
             <Box width='100%' display='flex' height='40%'>
@@ -143,7 +166,7 @@ export const Dashboard = () => {
                                 <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
                                 {!isLoadingTipos &&(
                                     <Typography variant="h3">
-                                        {totalCountTipos}
+                                        {totalCountDay}
                                     </Typography>
                                     )}
                                     {isLoadingTipos &&(
@@ -164,7 +187,7 @@ export const Dashboard = () => {
                                 <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
                                 {!isLoadingAgente &&(
                                     <Typography variant="h3">
-                                        {totalCountAgente}
+                                        {totalCountMonth}
                                     </Typography>
                                     )}
                                     {isLoadingAgente &&(
@@ -203,7 +226,8 @@ export const Dashboard = () => {
                                 <Typography variant="h6" align="center">
                                     Total de chamados
                                 </Typography>
-                                <Box padding={2} display='flex' justifyContent='center' alignItems='center'>     
+                                <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
+                                {!isLoadingChamado &&(     
                                     <Chart
                                         chartType="ColumnChart"
                                         width="100%"
@@ -211,6 +235,12 @@ export const Dashboard = () => {
                                         data={data}
                                         legendToggle={false}
                                     />
+                                )}
+                                    {isLoadingChamado &&(
+                                    <Typography variant="h6">
+                                        Carregando...
+                                    </Typography>
+                                    )}
                                 </Box>
                             </CardContent>
                             </Card>
