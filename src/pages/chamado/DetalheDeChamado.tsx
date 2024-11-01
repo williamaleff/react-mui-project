@@ -10,6 +10,7 @@ import { TFormDataChamado } from "./form/TFormDataChamado";
 import { useHookFormChamado } from "./form/useHookFormChamado"
 import { AutoCompleteTipos } from "../../shared/components/Autocomplete/AutoCompleteTipos";
 import { AutoCompleteCliente } from "../../shared/components/Autocomplete/AutoCompleteCliente";
+import { HistoricoService, IDetalheHistorico } from "../../shared/services/api/historico/HistoricoService";
 
 const formValidationSchema: yup.Schema<TFormDataChamado> = yup.object().shape({
   tipoId: yup.number().required(),
@@ -28,9 +29,9 @@ const formValidationSchema: yup.Schema<TFormDataChamado> = yup.object().shape({
 export const DetalheDeChamado: React.FC = () => {
   const { id = "novo" } = useParams<"id">();
   const [isLoading, setIsLoading] = useState(false);
-  const [busca, setBusca] = useState("");
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState('');
+  const [descricao, setDescricao] = useState<string>('');
   const [cliente, setCliente] = useState('');
 
   const navigate = useNavigate();
@@ -70,9 +71,15 @@ export const DetalheDeChamado: React.FC = () => {
               alert(result.message);
               navigate('/chamado');                    
           } else {
+
               setNome(tipo || result.descricao);
 
               Object.entries(result).forEach( ([chave, valor]) => {
+                if(chave=="descricao")
+                  {
+                   setDescricao(valor)
+                  }
+
                 setValue(chave as keyof TFormDataChamado, valor)} )
 
           }
@@ -93,7 +100,7 @@ export const DetalheDeChamado: React.FC = () => {
       anexo: " ",
     });
   }
-  }, [id, setValue, reset]);
+  }, [id, setValue, setDescricao, reset]);
 
   const handleSave = (data: TFormDataChamado) => {
     formValidationSchema
@@ -130,6 +137,20 @@ export const DetalheDeChamado: React.FC = () => {
               }
             }
           });
+          if(descricao!=dadosValidados.descricao){
+            const novoHistorico: Omit<IDetalheHistorico, "id"> = {
+              chamadoId: Number(id),
+              statusAnteriorId: 1,
+              statusNovoId: 2,
+              data: "2024-11-01",
+          };
+
+            HistoricoService.create(novoHistorico).then(() => {
+
+            });
+
+            setDescricao(dadosValidados.descricao);
+          }
         }
       })
       .catch((errors: yup.ValidationError) => {
