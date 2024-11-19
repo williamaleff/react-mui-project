@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { TiposService } from "../../shared/services/api/tipos/TiposService";
 import { ChamadoService } from "../../shared/services/api/chamado/ChamadoService";
 import Chart from "react-google-charts";
+import { useReactToPrint } from "react-to-print";
 
 interface TipoIdCount {
     tipoId: string;
@@ -39,6 +40,9 @@ fullYear + "-" + month + "-" + "01"
     const [isLoadingChamado, setIsLoadingChamado] = useState(true);
     const [totalCountChamado, setTotalCountChamado] = useState(0);
     const hasFetchedData = useRef(false);
+
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef })
 
     const [data, setData] = useState<(string | number | { role: string })[][]>([
         ["Tipos", "Chamados", { role: "style" }],
@@ -127,11 +131,12 @@ fullYear + "-" + month + "-" + "01"
         barraDeFerramentas={
         <FerramentasDaListagem
             mostrarBotaoNovo={false} 
-            mostrarBotaoImpressao={true}    
+            mostrarBotaoImpressao={true}  
+            aoClicarEmImpressao={reactToPrintFn}  
         />
 
         }>
-            <Box height='100%'>
+            <Box height='100%' ref={contentRef} >
             <Box width='100%' display='flex' height='40%'>
 
                 <Grid container margin={2}>
