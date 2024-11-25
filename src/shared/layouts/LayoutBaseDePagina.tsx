@@ -1,5 +1,5 @@
 import { Avatar, Box, Card, CardContent, Grid, Icon, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useDrawerContext } from "../contexts";
+import { useAuthContext, useDrawerContext } from "../contexts";
 import { ReactNode, useState } from "react";
 
 interface ILayoutBaseDePaginaProps {
@@ -23,6 +23,9 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const { logout } = useAuthContext();
+
         return (
         <Box height="100%" display="flex" flexDirection="column" gap={1}>
             <Box padding={1} display="flex" alignItems="center" gap={1} height={theme.spacing(smDown ? 6 : mdDown ? 8 : 12)} >
@@ -52,16 +55,16 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
                 <CardContent>
                 <Box display="flex" alignItems="center" onClick={handleClick} sx={{ cursor: 'pointer' }}>
                 <Typography sx={{ marginRight: 1 }}>William Alefe</Typography>
-                <Avatar>H</Avatar>
+                <Avatar alt="William" src="https://avatars.githubusercontent.com/u/53325812?v=4" />
             </Box>
             <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Perfil</MenuItem>
+                        <MenuItem onClick={()=>{}}>Perfil</MenuItem>
                         <MenuItem onClick={handleClose}>Configurações</MenuItem>
-                        <MenuItem onClick={handleClose}>Sair</MenuItem>
+                        <MenuItem onClick={logout}>Sair</MenuItem>
                     </Menu>
             </CardContent>
             </Card>
