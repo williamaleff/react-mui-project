@@ -57,9 +57,9 @@ fullYear + "-" + month + "-" + "01"
             try {
                 const [MonthResult, tiposResult, DayResult, chamadoResult] = await Promise.all([
                     ChamadoService.getDate(1, todayOfTheTime, DayOneOfMonth),
-                    TiposService.getAll(1),
+                    TiposService.getAll(),
                     ChamadoService.getDate(1, todayOfTheTime),
-                    ChamadoService.getAll(1),
+                    ChamadoService.getAll(),
                 ]);
 
                 if (!(DayResult instanceof Error)) {
@@ -229,10 +229,10 @@ fullYear + "-" + month + "-" + "01"
                             <Card>
                             <CardContent>
                                 <Typography variant="h6" align="center">
-                                    Total de chamados
+                                    Total de chamados em gráfico
                                 </Typography>
                                 <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
-                                {!isLoadingChamado &&(     
+                                 {totalCountChamado !== 0 && !isLoadingChamado &&(   
                                     <Chart
                                         chartType="ColumnChart"
                                         width="100%"
@@ -244,6 +244,11 @@ fullYear + "-" + month + "-" + "01"
                                     {isLoadingChamado &&(
                                     <Typography variant="h6">
                                         Carregando...
+                                    </Typography>
+                                    )}
+                                    {totalCountChamado === 0 && !isLoadingChamado &&(   
+                                    <Typography variant="h6">
+                                        Sem dados.
                                     </Typography>
                                     )}
                                 </Box>

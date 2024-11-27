@@ -49,7 +49,7 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
                     <Box width="100%" height={theme.spacing(20)} display="flex" alignItems="center" justifyContent="center">
                         <Avatar
                         sx={{ height: theme.spacing(12), width: theme.spacing(12)}} 
-                        src="./public/DALL·E 2024-11-17 21.26.59 - A minimalist and modern logo design for a service order management system in the IT field. The logo features a sleek computer icon with a checkmark in.webp"
+                        src="./logo.webp"
                         /*src="https://cdn.tecconcursos.com.br/figuras/a7352302-aa96-4001-9bb2-0b11ba5ea1da"*/
                         />
                     </Box>

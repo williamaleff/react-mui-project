@@ -37,7 +37,7 @@ type TChamadoComTotalCount = {
     totalCount: number;
 }
 
-const getAll = async (page = 1, filter = ''): Promise<TChamadoComTotalCount | Error> => {
+const getAll = async (page = 0, filter = ''): Promise<TChamadoComTotalCount | Error> => {
     try {
         const urlRelativa = `/chamado?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&descricao_like=${filter}`;
 
@@ -129,7 +129,7 @@ const create = async (dados: Omit<IDetalheChamado, 'id'>): Promise<number | Erro
             return data.id;            
         }
 
-        return new Error('Erro ao consultar o registro.');
+        return new Error('Erro ao criar o registro.');
         
     } catch (error) {
         console.log(error);
