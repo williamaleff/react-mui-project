@@ -8,41 +8,60 @@ import { DetalheDeAgente } from "../pages/agente/DetalheDeAgente";
 import { ListagemDeAgente } from "../pages/agente/ListagemDeAgente";
 import { ListagemDeTipos } from "../pages/tipos/ListagemDeTipos";
 import { DetalheDeTipos } from "../pages/tipos/DetalheDeTipos";
+import { ListagemDeInterno } from "../pages/interno/ListagemDeInterno";
+import { DetalheDeInterno } from "../pages/interno/DetalheDeInterno";
+import { frequencia as Frequencia } from "../pages/frequencia/frequencia"
+import BotaoRegistrarPonto from "../pages/ponto/registrarPonto";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
 
     useEffect(() => {
         setDrawerOptions([
+            //  {
+            //      icon: 'home',
+            //      path: '/pagina-inicial',
+            //      label: 'Página inicial'
+            //  },
+            // // // // // {
+            // // // //     icon: 'computer',
+            // // // //     path: '/chamado',
+            // // // //     label: 'Chamados'
+            // // // // },
+            // // // // {
+            // // // //     icon: 'people',
+            // // // //     path: '/cliente',
+            // // // //     label: 'Clientes'
+            // // // // },           
+            // // // // {
+            // // // //     icon:'badge',
+            // // // //     path: '/agente',
+            // // // //     label: 'Funcionários'
+            // // // // },
+            // // // // {
+            // // // //     icon: 'work',
+            // // // //     path: '/funcoes',
+            // // // //     label: 'Funcoes'
+            // // // // },
+            // // // // {
+            // // // //     icon: 'support',
+            // // // //     path: '/tipos',
+            // // // //     label: 'Tipos'
+            // // // // },
             {
-                icon: 'home',
-                path: '/pagina-inicial',
-                label: 'Página inicial'
+                icon: 'groupadd',
+                path: '/interno',
+                label: 'Internos'
             },
             {
-                icon: 'computer',
-                path: '/chamado',
-                label: 'Chamados'
-            },
-            {
-                icon: 'people',
-                path: '/cliente',
-                label: 'Clientes'
-            },           
-            {
-                icon:'badge',
-                path: '/agente',
-                label: 'Funcionários'
+                icon: 'badge',
+                path: '/frequencia',
+                label: 'Frequência'
             },
             {
                 icon: 'work',
-                path: '/funcoes',
-                label: 'Funcoes'
-            },
-            {
-                icon: 'support',
-                path: '/tipos',
-                label: 'Tipos'
+                path: '/ponto',
+                label: 'Registrar Ponto'
             }
         ])
     }, []);
@@ -72,7 +91,14 @@ export const AppRoutes = () => {
             <Route path="/tipos" element={<ListagemDeTipos />} />
             <Route path="/tipos/detalhe/:id" element={<DetalheDeTipos /> } />
 
-            <Route path="*" element={<Navigate to="/pagina-inicial" />} />
+            <Route path="/interno" element={<ListagemDeInterno />} />
+            <Route path="/interno/detalhe/:id" element={<DetalheDeInterno /> } />
+
+            <Route path="/frequencia" element={<Frequencia />} />
+
+            <Route path="/ponto" element={<BotaoRegistrarPonto/>} />
+
+            <Route path="*" element={<Navigate to="/interno" />} />
         </Routes>
     );
 }

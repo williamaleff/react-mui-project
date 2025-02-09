@@ -49,8 +49,9 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
                     <Box width="100%" height={theme.spacing(20)} display="flex" alignItems="center" justifyContent="center">
                         <Avatar
                         sx={{ height: theme.spacing(12), width: theme.spacing(12)}} 
-                        src="./logo.webp"
-                        /*src="https://cdn.tecconcursos.com.br/figuras/a7352302-aa96-4001-9bb2-0b11ba5ea1da"*/
+                        
+                        //src="./logo.webp"
+                        src="https://cdn.tecconcursos.com.br/figuras/a7352302-aa96-4001-9bb2-0b11ba5ea1da"
                         />
                     </Box>
 

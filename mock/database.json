@@ -45,7 +45,11 @@
     }
   ],
   "auth": {
-    "token": "aaaaaa.bbbbbbb.ccccccc"
+    "token": "aaaaaa.bbbbbbb.ccccccc",
+    "login": {
+      "login": "williamaleff",
+      "password": "102030"
+    }
   },
   "chamado": [
     {
@@ -279,6 +283,56 @@
     {
       "nome": "TI",
       "id": 2
+    }
+  ],
+  "interno": [
+    {
+      "id": 1,
+      "nome": "teste",
+      "mae": "fulana",
+      "localizacao": "Bloco A/Anexo",
+      "regime": "fechado",
+      "funcao": "padeiro",
+      "prontuario": "12345768",
+      "unidade": "upsobral",
+      "digital": "",
+      "foto": ""
+    },
+    {
+      "id": 2,
+      "nome": "teste2",
+      "mae": "fulana3",
+      "localizacao": "Bloco B/Anexo C",
+      "regime": "fechado",
+      "funcao": "soldador",
+      "prontuario": "45768903",
+      "unidade": "upsobral",
+      "digital": "",
+      "foto": ""
+    },
+    {
+      "nome": "william",
+      "mae": "val",
+      "localizacao": "brasil",
+      "regime": "FECHADO/CONDENADO",
+      "funcao": "ti",
+      "prontuario": "89765432",
+      "unidade": "UNIDADE PRISIONAL REGIONAL DE SOBRAL",
+      "digital": "Digital cadastrada",
+      "foto": "blob:http://localhost:5173/c4d5e5b7-1e19-4080-a8da-e3d8f9c4a28b",
+      "id": 3
+    },
+    {
+      "nome": "aleff",
+      "mae": "val",
+      "localizacao": "sobral",
+      "regime": "FECHADO/CONDENADO",
+      "funcao": "tecnico",
+      "prontuario": "34590",
+      "unidade": "UNIDADE PRISIONAL REGIONAL DE SOBRAL",
+      "digital": "AQAAABQAAAAEAQAAAQASAAEAZAAAAAAA*AAAAJIfXgUwuVtRzXCaOyc6XgtNXRYymPcnThNttv5Sbhy4ugDhBVda41KD0xgB3BFggDZ8ZhmVip7bCW1bwaZhxcLwPiHE56Lhoeiesn5RKErUjQFInkR5Ac/ReMn*2RXGHXy4VzVc2QjYrWDBJaOl/kCmfMk0VmBh5qULAPcEAA0NEZuZ1/UbXZKrPqyUFz56xh29y6DJ9cqEH6J4OXJNva/fItuHVE5NlWMj38hjnmPJs2sMNehsTq*PBvVLaiFHYMgRME9W4fzz2g6dSWbu*/4c6eWBB2arNk0tJ1Bx/v*/Rzd23Yx5EGqatmkk5SE9KGVkHdq/W7/TmTCuSBJMexc",
+      "foto": "blob:http://localhost:5173/82e2a17e-5546-45d0-8608-fce94c0becb6",
+      "id": 4
     }
   ]
 }

@@ -27,7 +27,7 @@ export const FerramentasDaListagem: React.FC<IFerramentasDaListagemProps> = ({
     aoClicarEmImpressao,
     textoBotaoNovo = "Novo",
     textoBotaoImpressao = "Imprimir",
-    mostrarBotaoNovo = true,
+    mostrarBotaoNovo = false,
     mostrarBotaoImpressao = false,
     mostrarInputData = false
 }) => {
