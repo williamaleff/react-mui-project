@@ -106,7 +106,7 @@ import { Environment } from "../../shared/environment";
                                     <IconButton size="small" onClick={() => navigate(`/interno/detalhe/${row.id}`)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
-                                    <IconButton size="small" onClick={() => navigate(`/frequencia`)}>
+                                    <IconButton size="small" onClick={() => navigate(`/frequencia/${row.id}`)}>
                                         <Icon>schedule</Icon>
                                     </IconButton>
                                 </TableCell>

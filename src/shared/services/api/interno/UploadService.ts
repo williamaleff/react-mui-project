@@ -38,7 +38,7 @@ const getByfile = async (file: string): Promise<Blob | Error> => {
  };
 
 
-export const Upload = {
+export const UploadService = {
     create,
     getByfile
 };

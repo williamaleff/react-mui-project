@@ -78,6 +78,7 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
                              label='Email' 
                              type="email"
                              value={email}
+                             InputLabelProps={{ shrink: true }}
                              disabled={isLoading}
                              error={!!emailError}
                              helperText={emailError}
@@ -90,6 +91,7 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
                              label='Senha' 
                              type="password" 
                              value={password}
+                             InputLabelProps={{ shrink: true }}
                              disabled={isLoading}
                              error={!!passwordError}
                              helperText={passwordError}

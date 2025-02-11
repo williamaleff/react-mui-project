@@ -9,7 +9,7 @@ import { InternoService } from "../../shared/services/api/interno/InternoService
 import { TFormDataInterno } from "../../shared/forms/TFormDataInterno";
 import { Avatar, IconButton } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import { Upload } from "../../shared/services/api/interno/upload";
+import { UploadService } from "../../shared/services/api/interno/UploadService";
 
 const formValidationSchema: yup.Schema<TFormDataInterno> = yup.object().shape({
   prontuario: yup.string().required().min(3),
@@ -66,7 +66,7 @@ export const DetalheDeInterno: React.FC = () => {
               Object.entries(result).forEach( ([chave, valor]) => {
                 setValue(chave as keyof TFormDataInterno, valor)} )
 
-              Upload.getByfile(result.foto).then((data) => {
+              UploadService.getByfile(result.foto).then((data) => {
                   if (data instanceof Error) {
                     alert(data.message);                    
                   } else {
@@ -191,7 +191,7 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    return await Upload.create(formData).then((result) => {
+    return await UploadService.create(formData).then((result) => {
      
       if (result instanceof Error) {
         alert(result.message + "\n Não foi possível enviar a foto para o backend")

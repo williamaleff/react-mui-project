@@ -12,6 +12,7 @@ import { ListagemDeInterno } from "../pages/interno/ListagemDeInterno";
 import { DetalheDeInterno } from "../pages/interno/DetalheDeInterno";
 import { frequencia as Frequencia } from "../pages/frequencia/frequencia"
 import BotaoRegistrarPonto from "../pages/ponto/registrarPonto";
+import ClockPage from "../pages/clockpage/ClockPage";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -55,13 +56,18 @@ export const AppRoutes = () => {
             },
             {
                 icon: 'badge',
-                path: '/frequencia',
+                path: '/frequencia/geral',
                 label: 'Frequência'
             },
             {
                 icon: 'work',
                 path: '/ponto',
                 label: 'Registrar Ponto'
+            }, 
+            {
+                icon: 'computer',
+                path: '/clock',
+                label: 'Tela do Ponto'
             }
         ])
     }, []);
@@ -94,9 +100,11 @@ export const AppRoutes = () => {
             <Route path="/interno" element={<ListagemDeInterno />} />
             <Route path="/interno/detalhe/:id" element={<DetalheDeInterno /> } />
 
-            <Route path="/frequencia" element={<Frequencia />} />
+            <Route path="/frequencia/:id" element={<Frequencia />} />
 
             <Route path="/ponto" element={<BotaoRegistrarPonto/>} />
+
+            <Route path="/clock" element={<ClockPage />} />
 
             <Route path="*" element={<Navigate to="/interno" />} />
         </Routes>
