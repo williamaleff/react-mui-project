@@ -1,40 +1,28 @@
 import { Environment } from "../../../environment";
 import { Api, setAuthToken } from "../axios-config";
 
-export interface IListagemInterno {
-    id: number;
-    nome: string;
-    prontuario: string;
-    digital: string;
-    foto: string;
-    funcao: string;
-    localizacao: string;
-    mae: string;
-    regime: string;
-    unidade: string;
+export interface IListagemUser {
+    id: string;
+        login: string;
+        password: string;
+        role: 'ADMIN' | 'USER';
 }
 
-export interface IDetalheInterno {
-    id: number;
-    nome: string;
-    mae: string;
-    localizacao: string;
-    regime: string;
-    funcao: string;
-    prontuario: string;
-    unidade: string;
-    digital: string;
-    foto: string;
+export interface IDetalheUser {
+        id: string;
+        login: string;
+        password: string;
+        role: 'ADMIN' | 'USER';
 }
 
-type TInternoComTotalCount = {
-    data: IListagemInterno[];
+type TUserComTotalCount = {
+    data: IListagemUser[];
     totalCount: number;
 }
 
-const getAll = async (page = 1, filter = ''): Promise<TInternoComTotalCount | Error> => {
+const getAll = async (page = 1, filter = ''): Promise<TUserComTotalCount | Error> => {
     try {
-        const urlRelativa = `/interno?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
+        const urlRelativa = `/user?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
 
         const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
         if (accessTokenData) {
@@ -61,9 +49,9 @@ const getAll = async (page = 1, filter = ''): Promise<TInternoComTotalCount | Er
     }
  };
 
-const getById = async (id: number): Promise<IDetalheInterno | Error> => {
+const getById = async (id: string): Promise<IDetalheUser | Error> => {
     try {
-        const { data } = await Api.get(`/interno/${id}`);
+        const { data } = await Api.get(`/user/${id}`);
 
         if (data) {
             return data;            
@@ -77,15 +65,15 @@ const getById = async (id: number): Promise<IDetalheInterno | Error> => {
     }
  };
 
-const create = async (dados: Omit<IDetalheInterno, 'id'>): Promise<number | Error> => { 
+const create = async (dados: Omit<IDetalheUser, 'id'>): Promise<string | Error> => { 
     try {
-        const { data } = await Api.post<IDetalheInterno>(`/interno`, dados);
+        const { data } = await Api.post<IDetalheUser>(`/auth/register`, dados);
 
         if (data) {
             return data.id;            
         }
 
-        return new Error('Erro ao consultar o registro.');
+        return new Error('Erro ao criar o acesso');
         
     } catch (error) {
         console.log(error);
@@ -93,25 +81,25 @@ const create = async (dados: Omit<IDetalheInterno, 'id'>): Promise<number | Erro
     }
 };
 
-const updateById = async (id: number, dados: IDetalheInterno): Promise<void | Error> => { 
+const updateById = async (id: string, dados: IDetalheUser): Promise<void | Error> => { 
     try {
-        await Api.put(`/interno/${id}`, dados);
+        await Api.put(`/user/${id}`, dados);
     } catch (error) {
         console.log(error);
         return new Error((error as {message: string}).message || "Erro ao atualizar os registros.");
     }
 };
 
-const deleteById = async (id: number): Promise<void | Error> => { 
+const deleteById = async (id: string): Promise<void | Error> => { 
     try {
-        await Api.delete(`/interno/${id}`);
+        await Api.delete(`/user/${id}`);
     } catch (error) {
         console.log(error);
         return new Error((error as {message: string}).message || "Erro ao deletar os registros.");
     }
 };
 
-export const InternoService = {
+export const UserService = {
     getAll,
     getById,
     create,

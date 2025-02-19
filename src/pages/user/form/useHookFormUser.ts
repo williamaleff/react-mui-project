@@ -1,8 +1,8 @@
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useRef, useCallback } from "react";
-import { TFormDataInterno } from "../../../shared/forms/TFormDataInterno"; 
+import { TFormDataUser } from "../../../shared/forms/TFormDataUser"; 
 
-export const useHookFormInterno = () => {
+export const useHookFormUser = <TFormData extends FieldValues = TFormDataUser>() => {
     const {
         register,
         handleSubmit,
@@ -14,13 +14,13 @@ export const useHookFormInterno = () => {
         clearErrors,
         formState: { isSubmitting },
         formState: { errors }
-    } = useForm<TFormDataInterno>();
+    } = useForm<TFormData>();
 
     const isSavingAndClose = useRef(false);
     const isSavingAndNew = useRef(false);
 
-    const onSubmit = useCallback((callback: (data: TFormDataInterno) => void) => {
-        return (data: TFormDataInterno) => {
+    const onSubmit = useCallback((callback: (data: TFormData) => void) => {
+        return (data: TFormData) => {
             callback(data);
             if (isSavingAndClose.current) {
                 // Lógica para fechar o formulário
@@ -33,7 +33,7 @@ export const useHookFormInterno = () => {
 
     return {
         register,
-        handleSubmit: (callback: (data: TFormDataInterno) => void) => handleSubmit(onSubmit(callback)),
+        handleSubmit: (callback: (data: TFormData) => void) => handleSubmit(onSubmit(callback)),
         isSavingAndNew,
         isSavingAndClose,
         isSubmitting,

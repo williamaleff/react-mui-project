@@ -1,6 +1,7 @@
 import { Avatar, Box, Card, CardContent, Grid, Icon, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useAuthContext, useDrawerContext } from "../contexts";
 import { ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ILayoutBaseDePaginaProps {
     titulo: string;
@@ -13,6 +14,8 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const mdDown = useMediaQuery(theme.breakpoints.down('md'));
 
+    const navigate = useNavigate();
+
     const { toggleDrawerOpen } = useDrawerContext();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -24,7 +27,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
         setAnchorEl(null);
     };
 
-    const { logout } = useAuthContext();
+    const { logout, authData } = useAuthContext();
 
         return (
         <Box height="100%" display="flex" flexDirection="column" gap={1}>
@@ -54,16 +57,16 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
             <Card sx={{ backgroundColor: 'transparent', boxShadow: 'none', border: 'none' }}>
                 <CardContent>
                 <Box display="flex" alignItems="center" onClick={handleClick} sx={{ cursor: 'pointer' }}>
-                <Typography sx={{ marginRight: 1 }}>William Alefe</Typography>
-                <Avatar alt="William" src="https://avatars.githubusercontent.com/u/53325812?v=4" />
+                <Typography sx={{ marginRight: 1 }}>{authData?.username || 'Admin'}</Typography>
+                <Avatar alt={authData?.username} src="./img/brasao-do-cearaAvatar.png" />
             </Box>
             <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={()=>{}}>Perfil</MenuItem>
-                        <MenuItem onClick={handleClose}>Configurações</MenuItem>
+                        <MenuItem onClick={()=>navigate('/user')}>Perfil</MenuItem>
+                        <MenuItem onClick={()=>navigate('/config')}>Configurações</MenuItem>
                         <MenuItem onClick={logout}>Sair</MenuItem>
                     </Menu>
             </CardContent>

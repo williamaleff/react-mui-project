@@ -10,6 +10,7 @@ import { TFormDataInterno } from "../../shared/forms/TFormDataInterno";
 import { Avatar, IconButton } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { UploadService } from "../../shared/services/api/interno/UploadService";
+import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService";
 
 const formValidationSchema: yup.Schema<TFormDataInterno> = yup.object().shape({
   prontuario: yup.string().required().min(3),
@@ -28,6 +29,8 @@ export const DetalheDeInterno: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
+  
+
   const navigate = useNavigate();
   const {
     register,
@@ -38,6 +41,11 @@ export const DetalheDeInterno: React.FC = () => {
     setValue,
     errors,
   } = useHookFormInterno();
+
+  // Crie uma variável para os props do prontuário
+  const prontuarioRegister = register("prontuario");
+  const { ref, onBlur: formOnBlur, ...rest } = prontuarioRegister;
+
 
   /////////////////DATA//////////////////////////////////////
 
@@ -144,6 +152,7 @@ export const DetalheDeInterno: React.FC = () => {
         }
       })
       .catch((errors: yup.ValidationError) => {
+        setIsLoading(false);
         const validationErrors: IVFormErrors = {};
 
         errors.inner.forEach((error) => {
@@ -227,6 +236,34 @@ const [loading, setLoading] = useState(false);
     }
   };
 
+  const handleProntuarioBlur = async (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const prontuario = event.target.value;
+
+    if (/^\d{6}$/.test(prontuario)) {
+      try {
+        const candidato = await CandidatosService.getCandidatoByProntuario(prontuario);
+        
+        // Se a API retornar os dados do candidato, preenche os campos
+        if (candidato) {
+          setValue('nome', candidato.nome || '');
+          setValue('mae', candidato.mae || '');
+          // Mapeia a propriedade "ultimaLocalizacao" para o campo "localizacao" do formulário
+          setValue('localizacao', candidato.ultimaLocalizacao || '');
+          // Mapeia "tipoDeRegime" para "regime"
+          setValue('regime', candidato.tipoDeRegime || '');
+          setValue('funcao', candidato.funcao || '');
+          setValue('unidade', candidato.unidade || '');
+        } else {
+          console.log("Candidato não encontrado.");
+        }
+      } catch (error: any) {
+        console.error("Erro ao buscar candidato:", error);
+      }
+    } else {
+      setError('prontuario', { type: 'manual', message: 'O prontuário deve conter exatamente 6 números.' });
+    }
+  };
+
   return (
     <LayoutBaseDePagina
       titulo={id === "novo" ? "Novo Funcionario" : nome}
@@ -295,7 +332,15 @@ const [loading, setLoading] = useState(false);
                   placeholder="Prontuário"
                   label="Prontuário"
                   disabled={isLoading}
-                  {...register("prontuario")}
+                  onBlur={(e) => {
+                    // Primeiro chama o onBlur do react-hook-form
+                    formOnBlur(e);
+                    // Em seguida, a sua função customizada
+                    handleProntuarioBlur(e);
+                  }}
+                  inputRef={ref}
+                  {...rest}
+                  inputProps={{ inputMode: 'numeric', maxLength: 6, pattern: '[0-9]*' }} // Corrigido para inputProps
                   InputLabelProps={{ shrink: true }} 
                   error={!!errors.prontuario}
                   helperText={errors.prontuario ? errors.prontuario.message : ""}

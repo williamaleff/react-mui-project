@@ -1,16 +1,53 @@
-import { Api } from "../axios-config";
+import { Api, setAuthToken } from "../axios-config";
 
-interface horasTrabalhadas {
+interface IgetHorasTrabalhadas {
   funcionarioId: string;
   totalHorasTrabalhadas: string;
 }
-const registrarPonto = async (funcionarioId: number): Promise<void> => {
+
+interface IRegistrarPonto {
+  quantidade: number;
+  entrada: string;
+  saidaAlmoco: string;
+  retornoAlmoco: string;
+  saida: string;
+}
+
+interface IRegistroPontoResponse {
+  registroPonto: IRegistrarPonto;
+  nome: string;
+  foto: string;
+}
+
+interface IRegistroFuncionario {
+  id: number;
+  funcionarioId: number;
+  dia: string; // "YYYY-MM-DD"
+  diaSemana: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
+  entrada: string;
+  saidaAlmoco: string | null;
+  retornoAlmoco: string | null;
+  saida: string | null;
+  horasTrabalhadas: string | null;
+  observacao: string | null;
+}
+
+export type TgetRegistrosFuncionarioMes = IRegistroFuncionario[];
+
+const registrarPonto = async (funcionarioId: number): Promise<IRegistrarPonto | Error> => {
   try {
-    const response = await Api.post<string>(`/ponto/registrar/${funcionarioId}`);
-    console.log(response.data); // Exibe a mensagem: "Ponto registrado com sucesso!"
-  } catch (error) {
-    // Aqui você pode tratar o erro (por exemplo, exibir uma mensagem para o usuário)
-    console.error("Erro ao registrar o ponto:", error);
+    const response = await Api.post<IRegistrarPonto>(`/ponto/registrar/${funcionarioId}`);
+    
+    if (response) {
+      return response.data;            
+  }
+
+  return new Error('Erro ao registrar ponto.');
+  
+} catch (error) {
+  console.log(error);
+  return new Error((error as {message: string}).message || "Erro ao registrar o ponto biometrico.");
+
   }
 };
 
@@ -30,10 +67,16 @@ const getPorPeriodo = async (ano: number, mes: number): Promise<JSON | Error> =>
     }
  };
 
-const downloadRegistrosPDF = async (ano: number, mes: number) => {
+const downloadRegistrosPDF = async (ano: number, mes: number): Promise<string | Error> => {
     try {
         const response = await Api.get(`/ponto/pdf/registros/mes?ano=${ano}&mes=${mes}`, {responseType: 'blob'});
-
+        
+        const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessToken) {
+            setAuthToken(JSON.parse(accessToken));
+        } else {
+            setAuthToken(null);
+        }
         // Criar um link para download do arquivo
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
         const link = document.createElement('a');
@@ -43,8 +86,11 @@ const downloadRegistrosPDF = async (ano: number, mes: number) => {
         link.click();
         document.body.removeChild(link);
 
+        return "response";
+
     } catch (error) {
         console.error("Erro ao baixar o PDF:", error);
+        return new Error((error as {message: string}).message || "Erro ao baixar o PDF.");
     }
 };
 
@@ -78,9 +124,9 @@ const downloadExcelRegistros = async (ano: number, mes: number): Promise<void> =
     }
   };
 
-const getRegistrosFuncionarioMes = async (funcionarioId: number, ano: number, mes: number): Promise<JSON | Error> => {
+const getRegistrosFuncionarioMes = async (funcionarioId: number, ano: number, mes: number): Promise<TgetRegistrosFuncionarioMes | Error> => {
     try {
-        const { data } = await Api.get(`/ponto/registros/funcionario?funcionarioId=${funcionarioId}&ano=${ano}&mes=${mes}`);
+        const { data } = await Api.get<TgetRegistrosFuncionarioMes>(`/ponto/registros/funcionario?funcionarioId=${funcionarioId}&ano=${ano}&mes=${mes}`);
 
         if (data) {
             return data;            
@@ -142,9 +188,9 @@ const downloadExcelRegistrosporId = async (funcionarioId: number, ano: number, m
     }
   };
 
-const getHorasTrabalhadas = async (funcionarioId: number, ano: number, mes: number): Promise<horasTrabalhadas | Error> => {
+const getHorasTrabalhadas = async (funcionarioId: number, ano: number, mes: number): Promise<IgetHorasTrabalhadas | Error> => {
     try {
-        const { data } = await Api.get<horasTrabalhadas>(`/ponto/horas-trabalhadas?funcionarioId=${funcionarioId}&ano=${ano}&mes=${mes}`);
+        const { data } = await Api.get<IgetHorasTrabalhadas>(`/ponto/horas-trabalhadas?funcionarioId=${funcionarioId}&ano=${ano}&mes=${mes}`);
 
         if (data) {
             return data;            
@@ -158,13 +204,15 @@ const getHorasTrabalhadas = async (funcionarioId: number, ano: number, mes: numb
     }
 };
 
-const verifyFingerprint = async (biometria: any): Promise<any | Error> => {
+const verifyFingerprint = async (biometria: any): Promise<IRegistroPontoResponse | Error> => {
     try {
-      const response = await Api.post<JSON>(`/api/verifyFingerprint`, biometria);
+      const response = await Api.post<IRegistroPontoResponse>(`/api/verifyFingerprint`, biometria);
       if (response) {
-        return response;            
+        return response.data;            
     }
     
+    return new Error('Erro ao registrar ponto.');
+
     } catch (error) {
         return new Error((error as {message: string}).message || "Erro ao verificar a digital.");
     }

@@ -154,7 +154,6 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
             {mostrarBotaoVoltarCarregando && (
                 <Skeleton width={110} height={60}/>
             )}
-
         </Box>
     );
 }
