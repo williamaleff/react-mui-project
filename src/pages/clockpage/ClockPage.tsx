@@ -101,7 +101,13 @@ export default function ClockPage() {
                 setOpenError(true);
                 setLoading(false);
                 return; // Para a execução da função
+              }else if(e.message === 'Request failed with status code 400'){
+                setErrorMessage("Aguarde 10 minutos antes de registrar novamente.");
+                setOpenError(true);
+                setLoading(false);
+                return; // Para a execução da função
               }
+
                 console.log(e.message);                    
             }else{
               // Verifica se a mensagem é "Digital não cadastrada"

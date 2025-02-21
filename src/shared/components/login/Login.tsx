@@ -3,6 +3,7 @@ import { useAuthContext } from "../../contexts";
 import { useState } from "react";
 import * as yup from 'yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const loginSchema = yup.object().shape({
     email: yup.string().required(),
@@ -21,6 +22,22 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+
+    const location = useLocation();
+   // Divide o caminho em segmentos e remove os vazios (caso haja barras extras)
+  const segments = location.pathname.split('/').filter(Boolean);
+  
+  // Se não houver nenhum segmento (estamos na raiz), define o link como "/clock"
+  if (segments.length === 0) {
+    segments.push("clock");
+  } else {
+    // Substitui o último segmento por "clock"
+    segments[segments.length - 1] = "clock";
+  }
+  
+  // Reconstrói o caminho com uma barra inicial
+  const newHref = `/${segments.join('/')}`;
+
 
     const handleSubmit = () => {
         setIsLoading(true);
@@ -109,14 +126,9 @@ export const Login: React.FC<ILoginProps> = ({children}) => {
                 </Button>
 
                 <Typography >
-                     <Link href="#" >
-                        Esqueceu a senha ?
-                </Link>
-                </Typography>
-                <Typography > Você não tem uma conta? 
-                     <Link href="#" >
-                        Inscrição 
-                </Link>
+                    <Link component={RouterLink} to={newHref} underline="none">
+                        Ir para tela de registro do ponto?
+                    </Link>
                 </Typography>
                 </Box>
                 </Box>

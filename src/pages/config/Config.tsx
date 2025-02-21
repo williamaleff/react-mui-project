@@ -1,24 +1,72 @@
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
-import { useState } from "react";
-import { Box, Button, Card, CardContent, LinearProgress, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Card, CardContent, CircularProgress, LinearProgress, Typography } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService"
 
  export const Config: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [atualizaData, setAtualizaData] = useState('')
 
+    useEffect(() => {
+            setIsLoading(true);
+    
+            
+                CandidatosService.getOldestDataAtualizacao()
+            .then((result) => {
+                setIsLoading(false);
+    
+                if (result instanceof Error) {
+                    
+                  alert(result.message);
+                    const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
+                    if (accessToken) {
+                        // Remove o token
+                        localStorage.removeItem('APP_ACCESS_TOKEN');
+                        console.log('Token removido com sucesso.');
+                        window.location.reload();
+                    } else {
+                        console.log('Nenhum token encontrado.');
+                    }
+                    
+                } else {
+                    console.log(result);
+
+                    const dateStr = result.oldestData ? result.oldestData: null;
+
+                    if (dateStr) {
+                    // Separa a parte da data e do horário
+                    const [datePart, timePart] = dateStr.split('T');
+                    // Separa ano, mês e dia
+                    const [year, month, day] = datePart.split('-');
+                    // Remove os milissegundos do horário
+                    const [time] = timePart.split('.');
+
+                    const formattedDate = `${day}/${month}/${year} às ${time}`;
+                    setAtualizaData(formattedDate)
+                    }
+
+    
+                }
+            });
+
+        },[])
+    
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      
       const file = event.target.files?.[0];
       if (!file) return;
-  
+      setIsLoading(true);
+      
       // Verifica se o arquivo é do tipo XLSX
       if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         alert("Por favor, selecione um arquivo .xlsx válido.");
+        setIsLoading(false);
         return;
       }
   
-      setIsLoading(true);
+      
       try {
         const mensagem = await CandidatosService.enviarArquivo(file);
         alert(mensagem);
@@ -53,7 +101,11 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
             <Typography variant="h6" gutterBottom>
                 ATUALIZAR AUTOCOMPLETE PELOS PRONTUÁRIOS
             </Typography>
+            <Typography>
+                Última atualização em {atualizaData}
+            </Typography>
 
+            {isLoading &&(<LinearProgress variant="indeterminate" />)}  
           
           <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2}>
           <input
@@ -66,13 +118,12 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
               <Button 
                 variant="contained" 
                 color="success" 
-                startIcon={<UploadFileIcon />} 
                 onClick={handleButtonClick}
                 disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={20} /> : <UploadFileIcon />}
               >
-                ENVIAR ARQUIVO EXCEL
+                {isLoading ? "Carregando..." : "ENVIAR ARQUIVO EXCEL"}
               </Button>
-              {isLoading &&(<LinearProgress variant="indeterminate" />)}
             </Box>
 
         </CardContent>

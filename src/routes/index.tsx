@@ -24,36 +24,7 @@ export const AppRoutes = () => {
     useEffect(() => {
         if (isAdmin) {
         setDrawerOptions([
-            //  {
-            //      icon: 'home',
-            //      path: '/pagina-inicial',
-            //      label: 'Página inicial'
-            //  },
-            // // // // // {
-            // // // //     icon: 'computer',
-            // // // //     path: '/chamado',
-            // // // //     label: 'Chamados'
-            // // // // },
-            // // // // {
-            // // // //     icon: 'people',
-            // // // //     path: '/cliente',
-            // // // //     label: 'Clientes'
-            // // // // },           
-            // // // // {
-            // // // //     icon:'badge',
-            // // // //     path: '/agente',
-            // // // //     label: 'Funcionários'
-            // // // // },
-            // // // // {
-            // // // //     icon: 'work',
-            // // // //     path: '/funcoes',
-            // // // //     label: 'Funcoes'
-            // // // // },
-            // // // // {
-            // // // //     icon: 'support',
-            // // // //     path: '/tipos',
-            // // // //     label: 'Tipos'
-            // // // // },
+              
             {
                 icon: 'groupadd',
                 path: '/interno',
@@ -65,16 +36,6 @@ export const AppRoutes = () => {
                 label: 'Frequência'
             },
             {
-                icon: 'work',
-                path: '/ponto',
-                label: 'Registrar Ponto'
-            }, 
-            {
-                icon: 'computer',
-                path: '/clock',
-                label: 'Tela do Ponto'
-            },
-            {
                 icon: 'support',
                 path: '/config',
                 label: 'Configuração'
@@ -83,6 +44,11 @@ export const AppRoutes = () => {
                 icon: 'people',
                 path: '/user',
                 label: 'Perfil'
+            },
+            {
+                icon: 'analytics',
+                path: '/dashboard',
+                label: 'Dashboard'
             }
         ])
     }else{
@@ -100,7 +66,7 @@ export const AppRoutes = () => {
         <Routes>
             {isAdmin ? (
             <>
-            <Route path="/pagina-inicial" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             
             <Route path="/pessoas" element={<ListagemDePessoas />} />
             <Route path="/pessoas/detalhe/:id" element={<DetalheDePessoas /> } />

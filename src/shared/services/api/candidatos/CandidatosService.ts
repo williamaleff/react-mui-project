@@ -1,4 +1,4 @@
-import { Api } from "../axios-config";
+import { Api, setAuthToken } from "../axios-config";
 
 // Interface para definir a estrutura dos dados do candidato
 export interface Candidato {
@@ -13,6 +13,20 @@ export interface Candidato {
     dataDaAtualizacao: string; // ou Date, conforme sua necessidade
   }  
 
+  interface Funcao {
+    funcao: string;
+    count: number;
+  }
+  
+  interface IGetCandidatosStatistics {
+    totalTrabalhaSim: number;
+    totalTrabalhaSimBiometriaSim: number;
+    funcoes: Funcao[];
+  }
+  
+  export interface IgetOldestDataAtualizacao{
+    oldestData: string | null;
+  }
 /**
  * Função que envia o arquivo para o endpoint e retorna uma mensagem de resposta.
  * @param file - O arquivo XLSX a ser enviado.
@@ -49,7 +63,56 @@ async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> 
     }
   }
 
+  async function getCandidatosStatistics(): Promise<IGetCandidatosStatistics | Error> {
+    try {     
+      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+         await setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
+       
+      const response = await Api.get<IGetCandidatosStatistics>(`/candidatos/statistics`);
+        
+      if (response) {
+          return response.data;
+      }     
+
+      return new Error('Erro ao trazer estatisticas');
+    } catch (error: any) {
+      console.error("Erro ao buscar dados:", error);
+      throw new Error("Erro ao buscar dados: " + error.message);
+    }
+  }
+
+  async function getOldestDataAtualizacao(): Promise<IgetOldestDataAtualizacao | Error> {
+    try {
+      const response = await Api.get<IgetOldestDataAtualizacao>(`/candidatos/oldest-data`);
+     
+      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
+        
+      if (response) {
+          return response.data;
+      }     
+
+      return new Error('Erro ao trazer data da ultima atualizacao.');
+    } catch (error: any) {
+      console.error("Erro ao buscar data:", error);
+      throw new Error("Erro ao buscar data: " + error.message);
+    }
+  }
+
+
 export const CandidatosService = {
     enviarArquivo,
-    getCandidatoByProntuario
+    getCandidatoByProntuario,
+    getOldestDataAtualizacao,
+    getCandidatosStatistics
 }

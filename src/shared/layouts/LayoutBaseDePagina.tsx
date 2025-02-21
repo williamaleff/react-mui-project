@@ -13,6 +13,40 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
     const theme = useTheme();
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const mdDown = useMediaQuery(theme.breakpoints.down('md'));
+    
+function stringToColor(string: string) {
+    let hash = 0;
+    let i;
+  
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    let color = '#';
+  
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+  
+    return color;
+  }
+  
+  function stringAvatar(name: string) {
+    const nameParts = name.split(' ');
+    const initials =
+      `${nameParts[0]?.[0] || ''}${nameParts[1]?.[0] || ''}`.toUpperCase();
+  
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: initials,
+    };
+  }
+  
 
     const navigate = useNavigate();
 
@@ -58,7 +92,7 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({ childre
                 <CardContent>
                 <Box display="flex" alignItems="center" onClick={handleClick} sx={{ cursor: 'pointer' }}>
                 <Typography sx={{ marginRight: 1 }}>{authData?.username || 'Admin'}</Typography>
-                <Avatar alt={authData?.username} src="./img/brasao-do-cearaAvatar.png" />
+                <Avatar alt={authData?.username} {...stringAvatar(`${authData?.username || 'Admin'}`)} />
             </Box>
             <Menu
                         anchorEl={anchorEl}

@@ -3,7 +3,7 @@ import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useMemo, useState } from "react";
 import { IDetalheInterno, InternoService } from "../../shared/services/api/interno/InternoService";
-import { Avatar, Box, Button, Card, CardContent, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CircularProgress, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { PontoService, TgetRegistrosFuncionarioMes } from "../../shared/services/api/interno/PontoService";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
@@ -52,9 +52,9 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
     useEffect(() => {
       
         if(id !== 'geral'){
+            setIsLoading(true)
             setIsIndividual(true);
             InternoService.getById(Number(id)).then((result) => {
-      
                 if (result instanceof Error) {
                     alert(result.message);
                     navigate('/interno');                    
@@ -237,27 +237,26 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
                 */}
             </Box>
           </Box>
-
+          {isLoading &&(<LinearProgress variant="indeterminate" />)}
           <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2}>
                 <Button 
                     variant="contained" 
                     color="success" 
-                    startIcon={<DownloadIcon />}
                     onClick={handleClickPDF}
                     disabled={isLoading}
+                    startIcon={isLoading ? <CircularProgress size={20} /> : <DownloadIcon />}
                 >
-                    Baixar PDF
+                    {isLoading ? "Carregando..." : "Baixar PDF"}
               </Button>
               <Button 
                     variant="contained" 
                     color="success" 
-                    startIcon={<DownloadIcon />}
                     onClick={handleClickExcel}
                     disabled={isLoading}
+                    startIcon={isLoading ? <CircularProgress size={20} /> : <DownloadIcon />}
                 >
-                    Baixar Planilha
-              </Button>
-              {isLoading &&(<LinearProgress variant="indeterminate" />)}
+                    {isLoading ? "Carregando..." : "Baixar Planilha"}
+              </Button>    
             </Box>
 
           {/* Tabela */}
@@ -269,8 +268,8 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
         <Grid container spacing={2} alignItems="center" direction={{ xs: 'column', sm: 'row' }}>
           <Grid item>
             <Avatar
-              src={foto || "https://via.placeholder.com/80"} 
-              alt="Employee Photo" 
+              src={foto || ""} 
+              alt={nome} 
               sx={{ width: 100, height: 100, borderRadius: '8px' }}
             />
           </Grid>
@@ -358,10 +357,10 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
                   // Prepara a string com os horários, caso o registro exista; senão, exibe uma mensagem padrão
                   const horarios = registro
                     ? [
-                        registro.entrada,
-                        registro.saidaAlmoco,
-                        registro.retornoAlmoco,
-                        registro.saida,
+                        registro.entrada.split('.')[0],
+                        registro.saidaAlmoco ? registro.saidaAlmoco.split('.')[0] : null,
+                        registro.retornoAlmoco ? registro.retornoAlmoco.split('.')[0]: null,
+                        registro.saida ? registro.saida.split('.')[0]: null,
                       ]
                         .filter((item) => item !== null && item !== undefined)
                         .join(" | ")
