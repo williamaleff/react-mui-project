@@ -69,6 +69,13 @@ const getPorPeriodo = async (ano: number, mes: number): Promise<JSON | Error> =>
 
 const downloadRegistrosPDF = async (ano: number, mes: number): Promise<string | Error> => {
     try {
+      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const response = await Api.get(`/ponto/pdf/registros/mes?ano=${ano}&mes=${mes}`, {responseType: 'blob'});
         
         const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');   
@@ -96,6 +103,13 @@ const downloadRegistrosPDF = async (ano: number, mes: number): Promise<string | 
 
 const downloadExcelRegistros = async (ano: number, mes: number): Promise<void> => {
     try {
+      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
       const response = await Api.get(`ponto/registros/mes/excel`, {
         params: { ano, mes },
         responseType: 'blob', // importante para lidar com arquivos binários
@@ -126,6 +140,13 @@ const downloadExcelRegistros = async (ano: number, mes: number): Promise<void> =
 
 const getRegistrosFuncionarioMes = async (funcionarioId: number, ano: number, mes: number): Promise<TgetRegistrosFuncionarioMes | Error> => {
     try {
+      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const { data } = await Api.get<TgetRegistrosFuncionarioMes>(`/ponto/registros/funcionario?funcionarioId=${funcionarioId}&ano=${ano}&mes=${mes}`);
 
         if (data) {

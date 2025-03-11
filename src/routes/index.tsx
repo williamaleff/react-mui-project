@@ -1,13 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuthContext, useDrawerContext } from "../shared/contexts";
 import { useEffect } from "react";
-import { Dashboard, ListagemDePessoas, DetalheDePessoas, ListagemDeSuporte, DetalheDeSuporte, ListagemDeChamado, DetalheDeChamado, ListagemDeCliente, DetalheDeCliente } from "../pages";
-import { ListagemDeFuncoes } from "../pages/funcoes/ListagemDeFuncoes";
-import { DetalheDeFuncoes } from "../pages/funcoes/DetalheDeFuncoes";
-import { DetalheDeAgente } from "../pages/agente/DetalheDeAgente";
-import { ListagemDeAgente } from "../pages/agente/ListagemDeAgente";
-import { ListagemDeTipos } from "../pages/tipos/ListagemDeTipos";
-import { DetalheDeTipos } from "../pages/tipos/DetalheDeTipos";
+import { Dashboard } from "../pages";
 import { ListagemDeInterno } from "../pages/interno/ListagemDeInterno";
 import { DetalheDeInterno } from "../pages/interno/DetalheDeInterno";
 import { Frequencia } from "../pages/frequencia/Frequencia";
@@ -28,7 +22,7 @@ export const AppRoutes = () => {
             {
                 icon: 'groupadd',
                 path: '/interno',
-                label: 'Internos'
+                label: 'Biometria'
             },
             {
                 icon: 'badge',
@@ -66,29 +60,8 @@ export const AppRoutes = () => {
         <Routes>
             {isAdmin ? (
             <>
-            <Route path="/dashboard" element={<Dashboard />} />
-            
-            <Route path="/pessoas" element={<ListagemDePessoas />} />
-            <Route path="/pessoas/detalhe/:id" element={<DetalheDePessoas /> } />
-
-            <Route path="/funcoes" element={<ListagemDeFuncoes />} />
-            <Route path="/funcoes/detalhe/:id" element={<DetalheDeFuncoes /> } />
-
-            <Route path="/suporte" element={<ListagemDeSuporte />} />
-            <Route path="/suporte/detalhe/:id" element={<DetalheDeSuporte /> } />
-
-            <Route path="/agente" element={<ListagemDeAgente />} />
-            <Route path="/agente/detalhe/:id" element={<DetalheDeAgente /> } />
-            
-            <Route path="/chamado" element={<ListagemDeChamado />} />
-            <Route path="/chamado/detalhe/:id" element={<DetalheDeChamado /> } />
-
-            <Route path="/cliente" element={<ListagemDeCliente />} />
-            <Route path="/cliente/detalhe/:id" element={<DetalheDeCliente /> } />
-
-            <Route path="/tipos" element={<ListagemDeTipos />} />
-            <Route path="/tipos/detalhe/:id" element={<DetalheDeTipos /> } />
-
+            <Route path="/dashboard" element={<Dashboard />} />             
+           
             <Route path="/interno" element={<ListagemDeInterno />} />
             <Route path="/interno/detalhe/:id" element={<DetalheDeInterno /> } />
 

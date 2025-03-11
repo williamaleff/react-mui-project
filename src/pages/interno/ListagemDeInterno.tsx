@@ -4,8 +4,9 @@ import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useMemo, useState } from "react";
 import { IListagemInterno, InternoService } from "../../shared/services/api/interno/InternoService";
 import { useDebounce } from "../../shared/hooks";
-import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
+import { Icon, IconButton, LinearProgress, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { Environment } from "../../shared/environment";
+import { Alert } from "../../shared/forms/Alert";
 
  export const ListagemDeInterno: React.FC = () => {
 
@@ -16,6 +17,19 @@ import { Environment } from "../../shared/environment";
     const [rows, setRows] = useState<IListagemInterno[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [openError, setOpenError] = useState(false);
+ 
+ // Função para fechar o Snackbar
+    const handleClose = (
+     _event?: React.SyntheticEvent | Event,
+     reason?: string
+    ) => {
+     if (reason === 'clickaway') {
+       return;
+     }
+     setOpenError(false);
+    };
 
     const busca = useMemo(()=>{
         return searchParams.get('busca') || '';
@@ -34,7 +48,8 @@ import { Environment } from "../../shared/environment";
             setIsLoading(false);
 
             if (result instanceof Error) {
-                alert(result.message);
+                setErrorMessage(result.message);
+                setOpenError(true);
                 const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
                 if (accessToken) {
                     // Remove o token
@@ -60,7 +75,8 @@ import { Environment } from "../../shared/environment";
             InternoService.deleteById(id)
             .then(result => {
                 if(result instanceof Error) {
-                    alert(result.message);
+                    setErrorMessage(result.message);
+                    setOpenError(true);
                 } else {
                     setRows(oldRows => [
                         ...oldRows.filter(oldRow => oldRow.id !== id)
@@ -73,7 +89,7 @@ import { Environment } from "../../shared/environment";
 
     return (
         <LayoutBaseDePagina
-            titulo="Listagem de interno"
+            titulo="Listagem de Biometria"
             barraDeFerramentas={
                 <FerramentasDaListagem
                 mostrarInputBusca 
@@ -84,6 +100,17 @@ import { Environment } from "../../shared/environment";
                 aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
                 />
             }>
+
+            <Snackbar
+                open={openError}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleClose} severity="error">
+                  {errorMessage}
+                </Alert>
+            </Snackbar>
 
             <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto'}}>
                 <Table>

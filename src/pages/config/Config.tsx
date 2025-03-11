@@ -1,13 +1,26 @@
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, CircularProgress, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CircularProgress, LinearProgress, Snackbar, Typography } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService"
+import { Alert } from "../../shared/forms/Alert";
 
  export const Config: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [atualizaData, setAtualizaData] = useState('')
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [openError, setOpenError] = useState(false);
+ 
+    const handleClose = (
+      _event?: React.SyntheticEvent | Event,
+      reason?: string
+    ) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpenError(false);
+    };
 
     useEffect(() => {
             setIsLoading(true);
@@ -18,8 +31,9 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
                 setIsLoading(false);
     
                 if (result instanceof Error) {
-                    
-                  alert(result.message);
+                    setErrorMessage(result.message);
+                    setOpenError(true);
+      
                     const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
                     if (accessToken) {
                         // Remove o token
@@ -31,8 +45,7 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
                     }
                     
                 } else {
-                    console.log(result);
-
+                  
                     const dateStr = result.oldestData ? result.oldestData: null;
 
                     if (dateStr) {
@@ -61,7 +74,8 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
       
       // Verifica se o arquivo é do tipo XLSX
       if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-        alert("Por favor, selecione um arquivo .xlsx válido.");
+        setErrorMessage("Por favor, selecione um arquivo .xlsx válido.");
+        setOpenError(true);
         setIsLoading(false);
         return;
       }
@@ -72,9 +86,11 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
         alert(mensagem);
       } catch (error: any) {
         if(error.message==='AxiosError: Request failed with status code 400'){
-          alert("Coluna obrigatória não encontrada na planilha");
-        }else {
-          alert(error.message);
+          setErrorMessage("Coluna obrigatória não encontrada na planilha");
+          setOpenError(true);
+			  }else {
+          setErrorMessage(error.message);
+          setOpenError(true);
         }
       } finally {
         setIsLoading(false);
@@ -94,6 +110,18 @@ import { CandidatosService } from "../../shared/services/api/candidatos/Candidat
                 <FerramentasDaListagem 
                   />
             }>
+
+              <Snackbar
+                      open={openError}
+                      autoHideDuration={6000}
+                      onClose={handleClose}
+                      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              >
+                      <Alert onClose={handleClose} severity="error">
+                        {errorMessage}
+                      </Alert>
+              </Snackbar>
+	
 
 <Box p={3}>
       <Card>

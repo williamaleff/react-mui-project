@@ -1,18 +1,17 @@
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { FerramentasDeDetalhe } from "../../shared/components";
-import { Box, Grid, LinearProgress, Paper, TextField, InputAdornment, MenuItem } from "@mui/material";
+import { Box, Grid, LinearProgress, Paper, TextField, InputAdornment, MenuItem, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
 import { IVFormErrors } from "../../shared/forms";
 import { UserService } from "../../shared/services/api/user/UserService";
-import { Avatar, IconButton } from "@mui/material";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import { UploadService } from "../../shared/services/api/interno/UploadService";
+import { IconButton } from "@mui/material";
 import { TFormDataUser } from "../../shared/forms/TFormDataUser";
 import { useHookFormUser } from "./form/useHookFormUser";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Alert } from "../../shared/forms/Alert";
 
 interface TFormDataUserWithConfirm extends TFormDataUser {
   confirmPassword: string;
@@ -34,6 +33,19 @@ export const DetalheDeUser: React.FC = () => {
   const [nome, setNome] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [labelSenha, setLabelSenha] = useState('Senha');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+   const [openError, setOpenError] = useState(false);
+ 
+ // Função para fechar o Snackbar
+   const handleClose = (
+     _event?: React.SyntheticEvent | Event,
+     reason?: string
+   ) => {
+     if (reason === 'clickaway') {
+       return;
+     }
+     setOpenError(false);
+   };
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -66,7 +78,8 @@ export const DetalheDeUser: React.FC = () => {
           setIsLoading(false);
 
           if (result instanceof Error) {
-              alert(result.message);
+              setErrorMessage(result.message);
+              setOpenError(true);  
               navigate('/user');                    
           } else {
               setNome(result.login);
@@ -106,7 +119,8 @@ export const DetalheDeUser: React.FC = () => {
             setIsLoading(false);
 
             if (result instanceof Error) {
-              alert(result.message);
+              setErrorMessage(result.message);
+              setOpenError(true);
             } else {
               if (isSavingAndClose.current) {
                 navigate("/user");
@@ -123,7 +137,8 @@ export const DetalheDeUser: React.FC = () => {
             setIsLoading(false);
 
             if (result instanceof Error) {
-              alert(result.message);
+              setErrorMessage(result.message);
+              setOpenError(true);
             } else {
               if (isSavingAndClose.current) {
                 navigate("/user");
@@ -152,49 +167,16 @@ export const DetalheDeUser: React.FC = () => {
         UserService.deleteById(id)
         .then(result => {
             if (result instanceof Error) {
-                alert(result.message);
+                setErrorMessage(result.message);
+                setOpenError(true);
             } else {
-                alert("Registro apagado com sucesso!")
-                navigate('/user');
+              alert("Registro apagado com sucesso!");
+              navigate('/user');
             }
         });            
     }
 }
 
-const [image, setImage] = useState<string | null>(null);
-const [file, setFile] = useState<File | null>(null);
-
-const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (event.target.files && event.target.files[0]) {
-    const file2 = event.target.files[0];
-    const imageUrl = URL.createObjectURL(file2);
-    setImage(imageUrl);
-    setFile(file2);
-  }
-};
-
- // Função para realizar o upload do arquivo para o endpoint do Spring Boot
- const handleUpload = async(): Promise<String | Error> => {
-    if (!file) return new Error("Nenhum arquivo selecionado.");
-    setIsLoading(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    return await UploadService.create(formData).then((result) => {
-     
-      if (result instanceof Error) {
-        alert(result.message + "\n Não foi possível enviar a foto para o backend")
-        return new Error(result.message)
-      } else {
-        console.log("Upload realizado com sucesso. URL da foto:", result.url);
-
-        //setValue("foto", String(result.url));
-        return String(result.url);
-      }
-    });  
-
-};
 
 ////////////////////////////////////////////////////
 
@@ -218,6 +200,17 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         />
       }
     >
+      <Snackbar
+            open={openError}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert onClose={handleClose} severity="error">
+                {errorMessage}
+              </Alert>
+           </Snackbar>
+
       {isLoading && <LinearProgress variant="indeterminate" />}
 
       <form onSubmit={handleSubmit(handleSave)}>
@@ -227,44 +220,14 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           flexDirection="column"
           component={Paper}
           variant="outlined"
-        >
+        > 
           <Grid container direction="column" padding={2} spacing={2}>
             {isLoading && (
               <Grid item>
                 <LinearProgress variant="indeterminate" />
               </Grid>
             )}
-{/*
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-              <input
-        accept="image/*"
-        type="file"
-        id="upload-photo"
-        style={{ display: "none" }}
-        onChange={handleImageChange}
-      />
-       <label htmlFor="upload-photo">
-        <IconButton component="span" style={{ position: "relative" }}>
-          <Avatar
-            src={image || ""}
-            sx={{ width: 100, height: 100 }}
-          />
-          <PhotoCameraIcon
-            sx={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              backgroundColor: "white",
-              borderRadius: "50%",
-              padding: "4px",
-            }}
-          />
-        </IconButton>
-      </label>
-              </Grid>
-            </Grid>     
-*/}
+
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
                 <TextField

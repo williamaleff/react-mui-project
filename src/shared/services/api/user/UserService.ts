@@ -51,6 +51,13 @@ const getAll = async (page = 1, filter = ''): Promise<TUserComTotalCount | Error
 
 const getById = async (id: string): Promise<IDetalheUser | Error> => {
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const { data } = await Api.get(`/user/${id}`);
 
         if (data) {
@@ -67,6 +74,13 @@ const getById = async (id: string): Promise<IDetalheUser | Error> => {
 
 const create = async (dados: Omit<IDetalheUser, 'id'>): Promise<string | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const { data } = await Api.post<IDetalheUser>(`/auth/register`, dados);
 
         if (data) {
@@ -83,6 +97,13 @@ const create = async (dados: Omit<IDetalheUser, 'id'>): Promise<string | Error> 
 
 const updateById = async (id: string, dados: IDetalheUser): Promise<void | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         await Api.put(`/user/${id}`, dados);
     } catch (error) {
         console.log(error);
@@ -92,6 +113,13 @@ const updateById = async (id: string, dados: IDetalheUser): Promise<void | Error
 
 const deleteById = async (id: string): Promise<void | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         await Api.delete(`/user/${id}`);
     } catch (error) {
         console.log(error);

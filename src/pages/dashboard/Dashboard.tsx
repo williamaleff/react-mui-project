@@ -1,10 +1,10 @@
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, Snackbar, Typography } from "@mui/material";
 import { FerramentasDaListagem} from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useRef, useState } from "react";
 import Chart from "react-google-charts";
-import { useReactToPrint } from "react-to-print";
 import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService";
+import { Alert } from "../../shared/forms/Alert";
 
 const colorScheme = [
     "#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b",
@@ -17,19 +17,6 @@ const colorScheme = [
 
 export const Dashboard = () => {
 
-    /////////////////DATA//////////////////////////////////////
-
-const horarioAtual = new Date().toLocaleTimeString();
-const fullYear = new Date().getFullYear().toString();
-const month = (new Date().getMonth() + 1).toString().padStart(2, "0");
-const day = new Date().getDate().toString().padStart(2, "0");
-const todayOfTheTime =
-  fullYear + "-" + month + "-" + day + "T" + horarioAtual;
-const DayOneOfMonth =
-fullYear + "-" + month + "-" + "01"
-
-//////////////////////////////////////////////////////////
-
     const [isLoadingAgente, setIsLoadingMonth] = useState(true);
     const [totalFuncoes, setTotalFuncoes] = useState(0);
     const [isLoadingTipos, setIsLoadingDay] = useState(true);
@@ -37,22 +24,33 @@ fullYear + "-" + month + "-" + "01"
     const [isLoadingChamado, setIsLoadingChamado] = useState(true);
     const [totalCountBiometria, setTotalCountBiometria] = useState(0);
     const hasFetchedData = useRef(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [openError, setOpenError] = useState(false);
+ 
+    const handleClose = (
+     _event?: React.SyntheticEvent | Event,
+     reason?: string
+    ) => {
+     if (reason === 'clickaway') {
+       return;
+     }
+     setOpenError(false);
+    };
 
     const contentRef = useRef<HTMLDivElement>(null);
-    const reactToPrintFn = useReactToPrint({ contentRef })
-
+   
     const [data, setData] = useState<(string | number | { role: string })[][]>([
         ["Funcoes", "Internos",{ role: "annotation" }, { role: "style" }],
     ]);
 
     // Calcule o maior valor dos counts (excluindo o cabeçalho)
-const maxCount =
-data.length > 1
-  ? data.slice(1).reduce((max, row) => Math.max(max, row[1] as number), 0)
-  : 0;
+    const maxCount =
+    data.length > 1
+      ? data.slice(1).reduce((max, row) => Math.max(max, row[1] as number), 0)
+      : 0;
 
-// Acrescente 20% de margem (pode ajustar conforme necessário)
-const vAxisMax = maxCount > 0 ? maxCount + Math.ceil(maxCount * 0.6) : 10;
+    // Acrescente 20% de margem (pode ajustar conforme necessário)
+    const vAxisMax = maxCount > 0 ? maxCount + Math.ceil(maxCount * 0.6) : 10;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,16 +78,17 @@ const vAxisMax = maxCount > 0 ? maxCount + Math.ceil(maxCount * 0.6) : 10;
                          setData((prevData) => [...prevData, ...chartData]);
                          hasFetchedData.current = true; 
                      }
-                     console.log("Dados para o gráfico:", [...data, ...chartData]);
-
+                     
                 } else {
-                    alert(e.message);
+                    setErrorMessage(e.message);
+                    setOpenError(true);
                 }
 
             });
             
             } catch (error) {
-                alert("Erro ao buscar dados: " + (error as Error).message);
+                setErrorMessage("Erro ao buscar dados: " + (error as Error).message);
+                setOpenError(true);  
             } finally {
                 setIsLoadingMonth(false);
                 setIsLoadingDay(false);
@@ -110,6 +109,17 @@ const vAxisMax = maxCount > 0 ? maxCount + Math.ceil(maxCount * 0.6) : 10;
         />
 
         }>
+            <Snackbar
+                open={openError}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleClose} severity="error">
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+	
             <Box height='100%' ref={contentRef} >
             <Box width='100%' display='flex' height='40%'>
 

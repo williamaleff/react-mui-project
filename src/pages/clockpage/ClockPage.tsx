@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Container, Box, Typography, Paper, Avatar, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Snackbar, AlertProps } from "@mui/material";
+import { Container, Box, Typography, Paper, Avatar, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Snackbar, AlertProps, LinearProgress } from "@mui/material";
 import { PontoService } from "../../shared/services/api/interno/PontoService";
-import { InternoService } from "../../shared/services/api/interno/InternoService";
 import { UploadService } from "../../shared/services/api/interno/UploadService";
 import MuiAlert from '@mui/material/Alert';
-
 
 // Componente Alert customizado usando o forwardRef
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -19,8 +17,7 @@ export default function ClockPage() {
   const [date, setDate] = useState<string>("");
   const [exibindoInfo, setExibindoInfo] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = useState("");
-  
+
   const [foto, setFoto] = useState('')
   const [nome, setNome] = useState("")
   const [frequencia, setFrequencia ] = useState("")
@@ -39,7 +36,7 @@ export default function ClockPage() {
 
    // Função para fechar o Snackbar
    const handleClose = (
-     event?: React.SyntheticEvent | Event,
+     _event?: React.SyntheticEvent | Event,
      reason?: string
    ) => {
      if (reason === 'clickaway') {
@@ -85,8 +82,6 @@ export default function ClockPage() {
     try {
       const response = await fetch('http://localhost:9000/api/public/v1/captura/Capturar/1');
       const data = await response.json();
-      setValue(data)
-     // console.log("Resposta da API:", data);
       if(data == null){
         console.log("Sem resposta do leitor biométrico.")
       }else{
@@ -226,6 +221,8 @@ export default function ClockPage() {
           </Box>
         </Box>
 
+        {loading && <LinearProgress variant="indeterminate" />}
+        
         {!exibindoInfo &&(
         <img 
             width={192} 

@@ -1,6 +1,6 @@
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { FerramentasDeDetalhe } from "../../shared/components";
-import { Box, Button, CircularProgress, Grid, LinearProgress, Paper, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, LinearProgress, Paper, Snackbar, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
@@ -11,6 +11,7 @@ import { Avatar, IconButton } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { UploadService } from "../../shared/services/api/interno/UploadService";
 import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService";
+import { Alert } from "../../shared/forms/Alert";
 
 const formValidationSchema: yup.Schema<TFormDataInterno> = yup.object().shape({
   prontuario: yup.string().required().min(3),
@@ -28,8 +29,19 @@ export const DetalheDeInterno: React.FC = () => {
   const { id = "novo" } = useParams<"id">();
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
-
-  
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openError, setOpenError] = useState(false);
+ 
+   // Função para fechar o Snackbar
+    const handleClose = (
+     _event?: React.SyntheticEvent | Event,
+     reason?: string
+   ) => {
+     if (reason === 'clickaway') {
+       return;
+     }
+     setOpenError(false);
+   }; 
 
   const navigate = useNavigate();
   const {
@@ -46,18 +58,6 @@ export const DetalheDeInterno: React.FC = () => {
   const prontuarioRegister = register("prontuario");
   const { ref, onBlur: formOnBlur, ...rest } = prontuarioRegister;
 
-
-  /////////////////DATA//////////////////////////////////////
-
-  // const horarioAtual = new Date().toLocaleTimeString();
-  // const fullYear = new Date().getFullYear().toString();
-  // const month = (new Date().getMonth() + 1).toString().padStart(2, "0");
-  // const day = new Date().getDate().toString().padStart(2, "0");
-  // // const todayOfTheTime =
-  //   // fullYear + "-" + month + "-" + day + "T" + horarioAtual;
-
-  //////////////////////////////////////////////////////////
-
   useEffect(() => {
     if (id !== 'novo') {
       setIsLoading(true);
@@ -67,8 +67,9 @@ export const DetalheDeInterno: React.FC = () => {
           setIsLoading(false);
 
           if (result instanceof Error) {
-              alert(result.message);
-              navigate('/interno');                    
+            setErrorMessage(result.message);
+            setOpenError(true);
+            navigate('/interno');                    
           } else {
               setNome(result.nome);
               Object.entries(result).forEach( ([chave, valor]) => {
@@ -76,7 +77,8 @@ export const DetalheDeInterno: React.FC = () => {
 
               UploadService.getByfile(result.foto).then((data) => {
                   if (data instanceof Error) {
-                    alert(data.message);                    
+                    setErrorMessage(data.message);
+                    setOpenError(true);
                   } else {
                     const imageUrlPreview = URL.createObjectURL(data);
                     setImage(imageUrlPreview)
@@ -107,7 +109,8 @@ export const DetalheDeInterno: React.FC = () => {
   const uploadedFileUrl = await handleUpload();
 
   if (uploadedFileUrl instanceof Error) {
-    alert(uploadedFileUrl.message);
+    setErrorMessage(uploadedFileUrl.message);
+    setOpenError(true);
     setIsLoading(false);
     return;
   }
@@ -125,7 +128,8 @@ export const DetalheDeInterno: React.FC = () => {
             setIsLoading(false);
 
             if (result instanceof Error) {
-              alert(result.message);
+              setErrorMessage(result.message);
+              setOpenError(true);
             } else {
               if (isSavingAndClose.current) {
                 navigate("/interno");
@@ -142,8 +146,9 @@ export const DetalheDeInterno: React.FC = () => {
             setIsLoading(false);
 
             if (result instanceof Error) {
-              alert(result.message);
-            } else {
+              setErrorMessage(result.message);
+              setOpenError(true);
+              } else {
               if (isSavingAndClose.current) {
                 navigate("/interno");
               }
@@ -171,7 +176,8 @@ export const DetalheDeInterno: React.FC = () => {
         InternoService.deleteById(id)
         .then(result => {
             if (result instanceof Error) {
-                alert(result.message);
+                setErrorMessage(result.message);
+                setOpenError(true);
             } else {
                 alert("Registro apagado com sucesso!")
                 navigate('/interno');
@@ -203,11 +209,10 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     return await UploadService.create(formData).then((result) => {
      
       if (result instanceof Error) {
-        alert(result.message + "\n Não foi possível enviar a foto para o backend")
+        setErrorMessage(result.message + "\n Não foi possível enviar a foto para o backend");
+        setOpenError(true);
         return new Error(result.message)
       } else {
-        console.log("Upload realizado com sucesso. URL da foto:", result.url);
-
         setValue("foto", String(result.url));
         return String(result.url);
       }
@@ -225,12 +230,13 @@ const [loading, setLoading] = useState(false);
       const response = await fetch('http://localhost:9000/api/public/v1/captura/Capturar/1');
       const data = await response.json();
       setValue("digital", data || "Digital cadastrada")
-      console.log("Resposta da API:", data);
       if(data == null){
-        alert("Sem resposta do leitor biométrico.")
+        setErrorMessage("Sem resposta do leitor biométrico.");
+        setOpenError(true);
       }
     } catch (error) {
-      console.error("Erro ao chamar API:", error);
+      setErrorMessage("Erro ao chamar API: "+ error);
+      setOpenError(true);
     } finally {
       setLoading(false);
     }
@@ -239,7 +245,7 @@ const [loading, setLoading] = useState(false);
   const handleProntuarioBlur = async (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const prontuario = event.target.value;
 
-    if (/^\d{6}$/.test(prontuario)) {
+    if (/^\d{6}$/.test(prontuario) || /^\d{5}$/.test(prontuario)) {
       try {
         const candidato = await CandidatosService.getCandidatoByProntuario(prontuario);
         
@@ -254,13 +260,15 @@ const [loading, setLoading] = useState(false);
           setValue('funcao', candidato.funcao || '');
           setValue('unidade', candidato.unidade || '');
         } else {
-          console.log("Candidato não encontrado.");
+          setErrorMessage("Candidato não encontrado.");
+          setOpenError(true);
         }
       } catch (error: any) {
-        console.error("Erro ao buscar candidato:", error);
+        setErrorMessage("Erro ao buscar candidato: "+ error);
+        setOpenError(true);
       }
     } else {
-      setError('prontuario', { type: 'manual', message: 'O prontuário deve conter exatamente 6 números.' });
+      setError('prontuario', { type: 'manual', message: 'O prontuário deve conter 5 ou 6 números.' });
     }
   };
 
@@ -284,6 +292,17 @@ const [loading, setLoading] = useState(false);
         />
       }
     >
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleClose} severity="error">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+
       {isLoading && <LinearProgress variant="indeterminate" />}
 
       <form onSubmit={handleSubmit(handleSave)}>
@@ -422,21 +441,6 @@ const [loading, setLoading] = useState(false);
     </Button>
               </Grid>
             </Grid>   
-
-
-            {/* <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                <AutoCompleteFuncoes
-                  control={control}
-                  name="funcaoId"
-                  errors={errors}
-                  isLoading={isLoading}
-                  setBusca={setBusca}
-                  busca={busca}
-                />
-              </Grid>
-            </Grid> */}
-    
           </Grid>
         </Box>
       </form>

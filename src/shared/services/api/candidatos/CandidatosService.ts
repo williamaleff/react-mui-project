@@ -33,6 +33,13 @@ export interface Candidato {
  * @returns Uma Promise que resolve com a mensagem retornada pelo backend.
  */
 async function enviarArquivo(file: File): Promise<string> {
+    const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+         await setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
   const formData = new FormData();
   formData.append("file", file);
 
@@ -55,6 +62,13 @@ async function enviarArquivo(file: File): Promise<string> {
  */
 async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> {
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+         await setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
       const response = await Api.get<Candidato>(`/planilha/candidatos/${prontuario}`);
       return response.data;
     } catch (error: any) {
@@ -65,7 +79,7 @@ async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> 
 
   async function getCandidatosStatistics(): Promise<IGetCandidatosStatistics | Error> {
     try {     
-      const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
         if (accessTokenData) {
             const parsedData = JSON.parse(accessTokenData);
          await setAuthToken(parsedData.token);   
@@ -88,7 +102,6 @@ async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> 
 
   async function getOldestDataAtualizacao(): Promise<IgetOldestDataAtualizacao | Error> {
     try {
-      const response = await Api.get<IgetOldestDataAtualizacao>(`/candidatos/oldest-data`);
      
       const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
         if (accessTokenData) {
@@ -97,6 +110,8 @@ async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> 
         } else {
             setAuthToken(null);
         }
+
+      const response = await Api.get<IgetOldestDataAtualizacao>(`/candidatos/oldest-data`);
         
       if (response) {
           return response.data;

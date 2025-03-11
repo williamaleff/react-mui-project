@@ -3,11 +3,12 @@ import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useMemo, useState } from "react";
 import { IDetalheInterno, InternoService } from "../../shared/services/api/interno/InternoService";
-import { Avatar, Box, Button, Card, CardContent, CircularProgress, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CircularProgress, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { PontoService, TgetRegistrosFuncionarioMes } from "../../shared/services/api/interno/PontoService";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { UploadService } from "../../shared/services/api/interno/UploadService";
+import { Alert } from "../../shared/forms/Alert";
 
  export const Frequencia: React.FC = () => {
     const { id = "geral" } = useParams<"id">();
@@ -26,6 +27,19 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
     const [detalhes, setDetalhes] = useState<IDetalheInterno>()  
 
     const navigate = useNavigate();
+
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [openError, setOpenError] = useState(false);
+ 
+    const handleClose = (
+     _event?: React.SyntheticEvent | Event,
+     reason?: string
+    ) => {
+     if (reason === 'clickaway') {
+       return;
+     }
+     setOpenError(false);
+    };
 
     function formatDuration(duration: string): string {
       // Utiliza uma expressão regular para capturar horas, minutos e segundos
@@ -56,7 +70,8 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
             setIsIndividual(true);
             InternoService.getById(Number(id)).then((result) => {
                 if (result instanceof Error) {
-                    alert(result.message);
+                    setErrorMessage(result.message);
+                    setOpenError(true);
                     navigate('/interno');                    
                 } else {
                     const [ano, mes] = month.split('-').map(Number);
@@ -66,17 +81,18 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
                       if (!(resultado instanceof Error)) {
                         setRegistros(resultado);
                       } else {
-                        console.error(resultado.message);
-                      }
+                        setErrorMessage(resultado.message);
+                        setOpenError(true);
+			                }
                     });
 
                     PontoService.getHorasTrabalhadas(result.id, ano, mes).then((e)=>{
                         setIsLoading(false);
                         if (e instanceof Error) {
-                            alert('Erro ao somar as horas trabalhadas \n'+e.message);                    
+                            setErrorMessage('Erro ao somar as horas trabalhadas \n'+e.message);
+                            setOpenError(true);
                         } else {
                             setTotalHoras(e.totalHorasTrabalhadas)
-                            console.log(e)
                             // Separa o ano e o mês
                             const [ano, mes] = month.split('-');
 
@@ -97,8 +113,9 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
 
                     UploadService.getByfile(result.foto).then(async(data) => {
                       if (data instanceof Error) {
-                        alert(data.message);                    
-                      } else {
+                        setErrorMessage(data.message);
+                        setOpenError(true);
+			                } else {
                         const imageUrlPreview = URL.createObjectURL(data);
                         setFoto(imageUrlPreview)
                       }              
@@ -129,10 +146,9 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
       }else {
         await PontoService.downloadRegistrosPDF(ano, mes).then((e)=>{
           if (e instanceof Error) {
-            alert(e.message);
+            setErrorMessage(e.message);
+            setOpenError(true);
             navigate('/interno');
-          }else{
-            console.log(e);
           }
 
         });
@@ -194,6 +210,18 @@ import { UploadService } from "../../shared/services/api/interno/UploadService";
                   }
                    />
             }>
+
+              <Snackbar
+                      open={openError}
+                      autoHideDuration={6000}
+                      onClose={handleClose}
+                      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              >
+                      <Alert onClose={handleClose} severity="error">
+                        {errorMessage}
+                      </Alert>
+              </Snackbar>
+
 
 <Box p={3}>
       <Card>

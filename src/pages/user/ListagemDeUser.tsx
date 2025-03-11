@@ -1,12 +1,13 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IListagemUser, UserService } from "../../shared/services/api/user/UserService";
 import { useDebounce } from "../../shared/hooks";
-import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
+import { Icon, IconButton, LinearProgress, Pagination, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { Environment } from "../../shared/environment";
-
+import { Alert } from "../../shared/forms/Alert";
+  
  export const ListagemDeUser: React.FC = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -16,6 +17,20 @@ import { Environment } from "../../shared/environment";
     const [rows, setRows] = useState<IListagemUser[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+
+   // Estados para a mensagem de erro e controle do Snackbar
+   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+   const [openError, setOpenError] = useState(false);
+
+   const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenError(false);
+  };
 
     const busca = useMemo(()=>{
         return searchParams.get('busca') || '';
@@ -34,20 +49,10 @@ import { Environment } from "../../shared/environment";
             setIsLoading(false);
 
             if (result instanceof Error) {
-                alert(result.message);
-                const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
-                if (accessToken) {
-                    // Remove o token
-                    localStorage.removeItem('APP_ACCESS_TOKEN');
-                    console.log('Token removido com sucesso.');
-                    window.location.reload();
-                } else {
-                    console.log('Nenhum token encontrado.');
-                }
-                
+                setErrorMessage(result.message);
+                setOpenError(true);
+                navigate('/interno');
             } else {
-                console.log(result);
-
                 setTotalCount(result.totalCount);
                 setRows(result.data);
             }
@@ -60,12 +65,14 @@ import { Environment } from "../../shared/environment";
             UserService.deleteById(id)
             .then(result => {
                 if(result instanceof Error) {
-                    alert(result.message);
+                    setErrorMessage(result.message);
+                    setOpenError(true);
                 } else {
                     setRows(oldRows => [
                         ...oldRows.filter(oldRow => oldRow.id !== id)
                     ]);
-                    alert('Registro apagado com sucesso!');
+                    setErrorMessage('Registro apagado com sucesso!');
+                    setOpenError(true);
                 }
             });
         }
@@ -84,7 +91,16 @@ import { Environment } from "../../shared/environment";
                 aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
                 />
             }>
-
+<Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleClose} severity="error">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
             <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto'}}>
                 <Table>
                     <TableHead>

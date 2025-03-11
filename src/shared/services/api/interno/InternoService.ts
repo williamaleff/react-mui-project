@@ -63,6 +63,13 @@ const getAll = async (page = 1, filter = ''): Promise<TInternoComTotalCount | Er
 
 const getById = async (id: number): Promise<IDetalheInterno | Error> => {
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const { data } = await Api.get(`/interno/${id}`);
 
         if (data) {
@@ -79,6 +86,13 @@ const getById = async (id: number): Promise<IDetalheInterno | Error> => {
 
 const create = async (dados: Omit<IDetalheInterno, 'id'>): Promise<number | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         const { data } = await Api.post<IDetalheInterno>(`/interno`, dados);
 
         if (data) {
@@ -95,6 +109,13 @@ const create = async (dados: Omit<IDetalheInterno, 'id'>): Promise<number | Erro
 
 const updateById = async (id: number, dados: IDetalheInterno): Promise<void | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         await Api.put(`/interno/${id}`, dados);
     } catch (error) {
         console.log(error);
@@ -104,6 +125,13 @@ const updateById = async (id: number, dados: IDetalheInterno): Promise<void | Er
 
 const deleteById = async (id: number): Promise<void | Error> => { 
     try {
+        const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');   
+        if (accessTokenData) {
+            const parsedData = JSON.parse(accessTokenData);
+            setAuthToken(parsedData.token);   
+        } else {
+            setAuthToken(null);
+        }
         await Api.delete(`/interno/${id}`);
     } catch (error) {
         console.log(error);
