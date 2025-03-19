@@ -106,13 +106,26 @@ export const DetalheDeInterno: React.FC = () => {
     setIsLoading(true);
 
   // Aguarda o upload terminar e pega a URL retornada
-  const uploadedFileUrl = await handleUpload();
+  var uploadedFileUrl = await handleUpload();
 
   if (uploadedFileUrl instanceof Error) {
     setErrorMessage(uploadedFileUrl.message);
     setOpenError(true);
-    setIsLoading(false);
-    return;
+
+    await UploadService.getByfile("http://localhost:8989/uploads/blackdefaultavatar.png").then((data) => {
+      
+      if (data instanceof Error) {
+        setErrorMessage(data.message);
+        setOpenError(true);
+        setIsLoading(false);
+        return;
+      } else {
+        const imageUrlPreview = URL.createObjectURL(data);
+        setImage(imageUrlPreview)
+        uploadedFileUrl = "http://localhost:8989/uploads/blackdefaultavatar.png"
+      }
+    })
+    
   }
 
   // Atualiza o campo "foto" com a URL retornada do upload

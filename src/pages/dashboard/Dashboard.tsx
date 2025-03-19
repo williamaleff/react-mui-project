@@ -150,7 +150,7 @@ export const Dashboard = () => {
                         <Card>
                             <CardContent>
                                 <Typography variant="h6" align="center">
-                                   Tem biometria
+                                   Tem biometria e trabalham
                                 </Typography>
                                 <Box padding={2} display='flex' justifyContent='center' alignItems='center'>
                                 {!isLoadingTipos &&(

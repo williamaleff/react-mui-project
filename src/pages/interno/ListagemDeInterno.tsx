@@ -8,7 +8,7 @@ import { Icon, IconButton, LinearProgress, Pagination, Paper, Snackbar, Table, T
 import { Environment } from "../../shared/environment";
 import { Alert } from "../../shared/forms/Alert";
 
- export const ListagemDeInterno: React.FC = () => {
+export const ListagemDeInterno: React.FC = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const { debounce } = useDebounce();
@@ -19,71 +19,76 @@ import { Alert } from "../../shared/forms/Alert";
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [openError, setOpenError] = useState(false);
- 
- // Função para fechar o Snackbar
+
+    // Função para fechar o Snackbar
     const handleClose = (
-     _event?: React.SyntheticEvent | Event,
-     reason?: string
+        _event?: React.SyntheticEvent | Event,
+        reason?: string
     ) => {
-     if (reason === 'clickaway') {
-       return;
-     }
-     setOpenError(false);
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenError(false);
     };
 
-    const busca = useMemo(()=>{
+    const busca = useMemo(() => {
         return searchParams.get('busca') || '';
-    },[searchParams]);
+    }, [searchParams]);
 
-    const pagina = useMemo(()=>{
+    const pagina = useMemo(() => {
         return Number(searchParams.get('pagina') || '1');
-    },[searchParams]);
+    }, [searchParams]);
 
     useEffect(() => {
         setIsLoading(true);
 
         debounce(() => {
             InternoService.getAll(pagina, busca)
-        .then((result) => {
-            setIsLoading(false);
+                .then((result) => {
+                    setIsLoading(false);
 
-            if (result instanceof Error) {
-                setErrorMessage(result.message);
-                setOpenError(true);
-                const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
-                if (accessToken) {
-                    // Remove o token
-                    localStorage.removeItem('APP_ACCESS_TOKEN');
-                    console.log('Token removido com sucesso.');
-                    window.location.reload();
-                } else {
-                    console.log('Nenhum token encontrado.');
-                }
-                
-            } else {
-                console.log(result);
+                    if (result instanceof Error) {
+                        setErrorMessage(result.message);
+                        setOpenError(true);
+                        const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
+                        if (accessToken) {
+                            // Remove o token
+                            localStorage.removeItem('APP_ACCESS_TOKEN');
+                            console.log('Token removido com sucesso.');
+                            window.location.reload();
+                        } else {
+                            console.log('Nenhum token encontrado.');
+                        }
 
-                setTotalCount(result.totalCount);
-                setRows(result.data);
-            }
+                    } else {
+                        console.log(result);
+
+                        setTotalCount(result.totalCount);
+                        setRows(result.data);
+                    }
+                });
         });
-        });
-    },[busca, pagina])
+    }, [busca, pagina])
 
     const handleDelete = (id: number) => {
         if (confirm('Realmente deseja apagar?')) {
             InternoService.deleteById(id)
-            .then(result => {
-                if(result instanceof Error) {
-                    setErrorMessage(result.message);
-                    setOpenError(true);
-                } else {
-                    setRows(oldRows => [
-                        ...oldRows.filter(oldRow => oldRow.id !== id)
-                    ]);
-                    alert('Registro apagado com sucesso!');
-                }
-            });
+                .then(result => {
+                    if (result instanceof Error) {
+
+                        if (result.message == 'Request failed with status code 500') {
+                            setErrorMessage("Tem registro de ponto");
+                        } else {
+                            setErrorMessage(result.message);
+                        }
+                        setOpenError(true);
+                    } else {
+                        setRows(oldRows => [
+                            ...oldRows.filter(oldRow => oldRow.id !== id)
+                        ]);
+                        alert('Registro apagado com sucesso!');
+                    }
+                });
         }
     };
 
@@ -92,12 +97,12 @@ import { Alert } from "../../shared/forms/Alert";
             titulo="Listagem de Biometria"
             barraDeFerramentas={
                 <FerramentasDaListagem
-                mostrarInputBusca 
-                mostrarBotaoNovo
-                textoBotaoNovo="Novo"
-                aoClicarEmNovo={() => navigate('/interno/detalhe/novo')}
-                textoDaBusca={busca}
-                aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
+                    mostrarInputBusca
+                    mostrarBotaoNovo
+                    textoBotaoNovo="Novo"
+                    aoClicarEmNovo={() => navigate('/interno/detalhe/novo')}
+                    textoDaBusca={busca}
+                    aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
                 />
             }>
 
@@ -108,11 +113,11 @@ import { Alert } from "../../shared/forms/Alert";
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <Alert onClose={handleClose} severity="error">
-                  {errorMessage}
+                    {errorMessage}
                 </Alert>
             </Snackbar>
 
-            <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto'}}>
+            <TableContainer component={Paper} variant="outlined" sx={{ m: 1, width: 'auto' }}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -123,7 +128,7 @@ import { Alert } from "../../shared/forms/Alert";
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        
+
                         {rows.map(row => (
                             <TableRow key={row.id}>
                                 <TableCell>
@@ -145,9 +150,9 @@ import { Alert } from "../../shared/forms/Alert";
 
                     </TableBody>
 
-                        {totalCount === 0 && !isLoading &&(
-                            <caption>{Environment.LISTAGEM_VAZIA}</caption>
-                        )}
+                    {totalCount === 0 && !isLoading && (
+                        <caption>{Environment.LISTAGEM_VAZIA}</caption>
+                    )}
 
                     <TableFooter>
                         {isLoading && (
@@ -161,9 +166,9 @@ import { Alert } from "../../shared/forms/Alert";
                             <TableRow>
                                 <TableCell colSpan={3}>
                                     <Pagination
-                                    page={pagina} 
-                                    count={Math.ceil(totalCount/Environment.LIMITE_DE_LINHAS)} 
-                                    onChange={(_, newPage) => setSearchParams({ busca, pagina: newPage.toString() },{ replace: true })} />
+                                        page={pagina}
+                                        count={Math.ceil(totalCount / Environment.LIMITE_DE_LINHAS)}
+                                        onChange={(_, newPage) => setSearchParams({ busca, pagina: newPage.toString() }, { replace: true })} />
                                 </TableCell>
                             </TableRow>
                         )}
@@ -174,4 +179,4 @@ import { Alert } from "../../shared/forms/Alert";
 
         </LayoutBaseDePagina>
     )
- };
+};
