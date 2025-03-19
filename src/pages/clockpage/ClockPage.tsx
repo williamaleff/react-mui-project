@@ -213,7 +213,7 @@ export default function ClockPage() {
         <Box display="flex" alignItems="center" gap={2} margin={3} marginLeft={5}>
           <img
             width={64}
-            src="./img/brasao-do-ceara.png"
+            src="/img/brasao-do-ceara.png"
             alt="Logo do estado do Ceará"
           />
           <Box>
@@ -232,7 +232,7 @@ export default function ClockPage() {
         {!exibindoInfo && (
           <img
             width={192}
-            src="./img/pontoBiometrico.png"
+            src="/img/pontoBiometrico.png"
             alt="Ponto Biométrico"
             style={{ marginTop: 16 }}
             onClick={startLoop}
