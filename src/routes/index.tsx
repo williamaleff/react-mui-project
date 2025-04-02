@@ -6,7 +6,6 @@ import { ListagemDeInterno } from "../pages/interno/ListagemDeInterno";
 import { DetalheDeInterno } from "../pages/interno/DetalheDeInterno";
 import { Frequencia } from "../pages/frequencia/Frequencia";
 import { Config } from "../pages/config/Config";
-import BotaoRegistrarPonto from "../pages/ponto/registrarPonto";
 import ClockPage from "../pages/clockpage/ClockPage";
 import { ListagemDeUser } from "../pages/user/ListagemDeUser";
 import { DetalheDeUser } from "../pages/user/DetalheDeUser";
@@ -69,8 +68,6 @@ export const AppRoutes = () => {
             <Route path="/user/detalhe/:id" element={<DetalheDeUser /> } />
 
             <Route path="/frequencia/:id" element={<Frequencia />} />
-
-            <Route path="/ponto" element={<BotaoRegistrarPonto/>} />
 
             <Route path="/clock" element={<ClockPage />} />
 
