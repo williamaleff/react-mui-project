@@ -3,12 +3,13 @@ import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useEffect, useMemo, useState } from "react";
 import { IDetalheInterno, InternoService } from "../../shared/services/api/interno/InternoService";
-import { Avatar, Box, Button, Card, CardContent, CircularProgress, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Avatar, Box, Button, Card, CardContent, CircularProgress, Collapse, Container, Grid, IconButton, LinearProgress, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { PontoService, TgetRegistrosFuncionarioMes } from "../../shared/services/api/interno/PontoService";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { UploadService } from "../../shared/services/api/interno/UploadService";
 import { Alert } from "../../shared/forms/Alert";
+import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService";
 
 export const Frequencia: React.FC = () => {
   const { id = "geral" } = useParams<"id">();
@@ -30,6 +31,9 @@ export const Frequencia: React.FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openError, setOpenError] = useState(false);
+
+  const [funcoes, setFuncoes] = useState<string[]>([]);
+  const [selectedFuncao, setSelectedFuncao] = useState<string>('Todos');
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -130,6 +134,18 @@ export const Frequencia: React.FC = () => {
 
   }, [id, month]);
 
+  useEffect(()=>{
+      CandidatosService.getCandidatosFuncoes().then((funcoes) => {
+        if (funcoes instanceof Error) {
+          setErrorMessage(funcoes.message);
+          setOpenError(true);
+        }else{
+          setFuncoes(['TODOS', ...funcoes]);
+        }
+
+      });
+  },[]);
+
   const handleMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMonth(event.target.value);
 
@@ -138,6 +154,7 @@ export const Frequencia: React.FC = () => {
   const handleClickPDF = async () => {
     setIsLoading(true);
     const [ano, mes] = month.split('-').map(Number);
+    const funcao = selectedFuncao;
 
     if (id !== 'geral') {
       await PontoService.downloadRegistrosPDFporID(Number(id), ano, mes).then((ex) => {
@@ -150,7 +167,7 @@ export const Frequencia: React.FC = () => {
       setIsLoading(false);
 
     } else {
-      await PontoService.downloadRegistrosPDF(ano, mes).then((e) => {
+      await PontoService.downloadRegistrosPDF(funcao, ano, mes).then((e) => {
         if (e instanceof Error) {
           setErrorMessage(e.message);
           setOpenError(true);
@@ -263,15 +280,32 @@ export const Frequencia: React.FC = () => {
                   onChange={handleMonthChange}
                   InputLabelProps={{ shrink: true }}
                   disabled={isLoading}
+                  sx={{ width: 300 }} // largura fixa para o campo Mês
                 />
                 {/*
                 <Button variant="contained" color="error" onClick={() => setMonth("")}>Redefinir</Button>
                 <Button variant="contained">Pesquisar</Button>
                 */}
+                {!isIndividual && (
+                <Autocomplete
+                  freeSolo
+                  options={funcoes}
+                  value={selectedFuncao}
+                  onChange={(_event, newValue) => {
+                    // Se newValue for nulo, mantém "Todos"
+                    setSelectedFuncao(newValue || 'TODOS');
+                  }}
+                  getOptionLabel={(option) => (typeof option === 'string' ? option : '')}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Função" variant="outlined" />
+                  )}
+                  style={{ width: 300 }}
+                />
+                )}
               </Box>
             </Box>
             {isLoading && (<LinearProgress variant="indeterminate" />)}
-            <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2}>
+            <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2} sx={{ pr: 4}}>
               <Button
                 variant="contained"
                 color="success"

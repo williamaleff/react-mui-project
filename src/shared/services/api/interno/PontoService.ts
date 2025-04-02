@@ -67,7 +67,7 @@ const getPorPeriodo = async (ano: number, mes: number): Promise<JSON | Error> =>
   }
 };
 
-const downloadRegistrosPDF = async (ano: number, mes: number): Promise<string | Error> => {
+const downloadRegistrosPDF = async (funcao: string | null,  ano: number, mes: number): Promise<string | Error> => {
   try {
     const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');
     if (accessTokenData) {
@@ -76,8 +76,13 @@ const downloadRegistrosPDF = async (ano: number, mes: number): Promise<string | 
     } else {
       setAuthToken(null);
     }
-    //const response = await Api.get(`/ponto/pdf/registros/mes?ano=${ano}&mes=${mes}`, { responseType: 'blob' });
-    const response = await Api.get(`/ponto/registros/funcionario/pdf?ano=${ano}&mes=${mes}`, { responseType: 'blob' });
+
+    // Define a URL de forma condicional:
+    const urlApi = funcao && funcao.toLowerCase() !== 'todos'
+      ? `/ponto/registros/funcionario/pdf?funcao=${funcao}&ano=${ano}&mes=${mes}`
+      : `/ponto/registros/funcionario/pdf?ano=${ano}&mes=${mes}`;
+
+      const response = await Api.get(urlApi, { responseType: 'blob' });
 
     if (response.data.size == 0) {
       return new Error("Erro no conteúdo  do PDF.");

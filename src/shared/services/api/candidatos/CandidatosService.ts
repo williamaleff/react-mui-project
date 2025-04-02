@@ -72,7 +72,6 @@ async function getCandidatoByProntuario(prontuario: string): Promise<Candidato> 
     const response = await Api.get<Candidato>(`/candidatos/${prontuario}`);
     return response.data;
   } catch (error: any) {
-    console.error("Erro ao buscar o candidato:", error);
     throw new Error("Erro ao buscar o candidato: " + error.message);
   }
 }
@@ -95,7 +94,6 @@ async function getCandidatosStatistics(): Promise<IGetCandidatosStatistics | Err
 
     return new Error('Erro ao trazer estatisticas');
   } catch (error: any) {
-    console.error("Erro ao buscar dados:", error);
     throw new Error("Erro ao buscar dados: " + error.message);
   }
 }
@@ -119,7 +117,6 @@ async function getOldestDataAtualizacao(): Promise<IgetOldestDataAtualizacao | E
 
     return new Error('Erro ao trazer data da ultima atualizacao.');
   } catch (error: any) {
-    console.error("Erro ao buscar data:", error);
     throw new Error("Erro ao buscar data: " + error.message);
   }
 }
@@ -155,10 +152,27 @@ const downloadRegistrosMalotePDF = async (): Promise<string | Error> => {
     return "response";
 
   } catch (error) {
-    console.error("Erro ao baixar o PDF:", error);
     return new Error((error as { message: string }).message || "Erro ao baixar o PDF.");
   }
 };
+
+const getCandidatosFuncoes = async (): Promise<string[] | Error> => {
+  try {
+    const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');
+    if (accessTokenData) {
+      const parsedData = JSON.parse(accessTokenData);
+      await setAuthToken(parsedData.token);
+    } else {
+      setAuthToken(null);
+    }
+
+    const response = await Api.get<string[]>(`/candidatos/funcoes`);
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error("Erro ao buscar candidato com essa funcao: " + error.message);
+  }
+}
 
 
 export const CandidatosService = {
@@ -166,5 +180,6 @@ export const CandidatosService = {
   getCandidatoByProntuario,
   getOldestDataAtualizacao,
   getCandidatosStatistics,
-  downloadRegistrosMalotePDF
+  downloadRegistrosMalotePDF,
+  getCandidatosFuncoes
 }
