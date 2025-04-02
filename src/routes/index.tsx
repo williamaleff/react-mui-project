@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Dashboard } from "../pages";
 import { ListagemDeInterno } from "../pages/interno/ListagemDeInterno";
 import { DetalheDeInterno } from "../pages/interno/DetalheDeInterno";
-import { Frequencia } from "../pages/frequencia/Frequencia";
+import { Frequencia } from "../pages/frequencia/Frequencia.tsx";
 import { Config } from "../pages/config/Config";
 import ClockPage from "../pages/clockpage/ClockPage";
 import { ListagemDeUser } from "../pages/user/ListagemDeUser";
