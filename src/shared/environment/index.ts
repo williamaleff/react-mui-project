@@ -14,7 +14,7 @@ export const Environment = {
     /**
      * Url base de consulta dos dados dessa aplicação
      */
-    URL_BASE: 'http://192.168.0.13:8989'
+    URL_BASE: 'http://192.168.14.53:8989'
     //Usando mock: http://localhost:3333 -> APP_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6ImFkbWluIiwiZXhwIjoxNzM4OTM2NDQxfQ.mbz2MKf0sS2-11EIZmftyYkx_PJeWzu_u21h4Kesn-k"
     //Usando SpringBoot: http://192.168.14.198:8000
     //testando auth: http://localhost:8989
