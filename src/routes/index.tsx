@@ -9,6 +9,7 @@ import { Config } from "../pages/config/Config";
 import ClockPage from "../pages/clockpage/ClockPage";
 import { ListagemDeUser } from "../pages/user/ListagemDeUser";
 import { DetalheDeUser } from "../pages/user/DetalheDeUser";
+import { GroupAdd, Badge, Support, People, Analytics, Computer } from "@mui/icons-material";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -19,27 +20,27 @@ export const AppRoutes = () => {
         setDrawerOptions([
               
             {
-                icon: 'groupadd',
+                icon: <GroupAdd />,
                 path: '/interno',
                 label: 'Biometria'
             },
             {
-                icon: 'badge',
+                icon: <Badge />,
                 path: '/frequencia/geral',
                 label: 'Frequência'
             },
             {
-                icon: 'support',
+                icon: <Support />,
                 path: '/config',
                 label: 'Configuração'
             },
             {
-                icon: 'people',
+                icon: <People />,
                 path: '/user',
                 label: 'Perfil'
             },
             {
-                icon: 'analytics',
+                icon: <Analytics />,
                 path: '/dashboard',
                 label: 'Dashboard'
             }
@@ -47,7 +48,7 @@ export const AppRoutes = () => {
     }else{
         setDrawerOptions([
             {
-              icon: "computer",
+              icon: <Computer />,
               path: "/clock",
               label: "Tela do Ponto",
             },

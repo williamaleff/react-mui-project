@@ -1,7 +1,7 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useState } from "react";
 
 interface IDrawerOption {
-    icon: string;
+    icon: ReactNode;
     path: string;
     label: string;
 }
