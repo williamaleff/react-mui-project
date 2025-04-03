@@ -1,10 +1,11 @@
 import { Avatar, Box, Divider, Drawer, Icon, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme } from "@mui/material";
 import { useAppThemeContext, useAuthContext, useDrawerContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
+import { ReactNode } from "react";
 
 interface IListItemLinkProps {
     to: string;
-    icon: string;
+    icon: ReactNode;
     label: string;
     onClick: (() => void) | undefined;
 }
