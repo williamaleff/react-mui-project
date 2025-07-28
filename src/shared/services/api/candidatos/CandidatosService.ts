@@ -121,41 +121,6 @@ async function getOldestDataAtualizacao(): Promise<IgetOldestDataAtualizacao | E
   }
 }
 
-const downloadRegistrosMalotePDF = async (): Promise<string | Error> => {
-  try {
-    const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');
-    if (accessTokenData) {
-      const parsedData = JSON.parse(accessTokenData);
-      setAuthToken(parsedData.token);
-    } else {
-      setAuthToken(null);
-    }
-    const response = await Api.get(`/api/pdf/gerarMalote`, { responseType: 'blob' });
-
-    const dataAtual = new Date();
-    const ano = dataAtual.getFullYear();
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0'); // Formata com 2 dígitos
-
-    if(response.data.size == 0){
-      return new Error("Erro no conteúdo  do PDF.");  
-    }
-
-    // Criar um link para download do arquivo
-    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `Malote_${mes}_${ano}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    return "response";
-
-  } catch (error) {
-    return new Error((error as { message: string }).message || "Erro ao baixar o PDF.");
-  }
-};
-
 const getCandidatosFuncoes = async (): Promise<string[] | Error> => {
   try {
     const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');
@@ -180,6 +145,5 @@ export const CandidatosService = {
   getCandidatoByProntuario,
   getOldestDataAtualizacao,
   getCandidatosStatistics,
-  downloadRegistrosMalotePDF,
   getCandidatosFuncoes
 }

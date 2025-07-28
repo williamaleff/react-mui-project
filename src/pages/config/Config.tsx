@@ -5,7 +5,6 @@ import { Box, Button, Card, CardContent, CircularProgress, LinearProgress, Snack
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { CandidatosService } from "../../shared/services/api/candidatos/CandidatosService"
 import { Alert } from "../../shared/forms/Alert";
-import DownloadIcon from "@mui/icons-material/Download";
 
 export const Config: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -104,24 +103,6 @@ export const Config: React.FC = () => {
     document.getElementById("fileInput")?.click();
   };
 
-  const handleClickPDF = async () => {
-    setIsLoading(true);
-
-    await CandidatosService.downloadRegistrosMalotePDF().then((e) => {
-      if (e instanceof Error) {
-        setErrorMessage(e.message);
-        setOpenError(true);
-      }
-
-    });
-    setIsLoading(false);
-
-
-
-  };
-
-
-
   return (
     <LayoutBaseDePagina
       titulo="Configuração"
@@ -174,29 +155,6 @@ export const Config: React.FC = () => {
             </Box>
 
           </CardContent>  
-        </Card>
-        <Card>
-        <CardContent>
-            <Typography variant="h6" gutterBottom>
-              IMPRIMIR MALOTE PARA ASSINATURA POR ALA
-            </Typography>
-
-            {isLoading && (<LinearProgress variant="indeterminate" />)}
-
-            <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2}>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleClickPDF}
-                disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={20} /> : <DownloadIcon />}
-              >
-                {isLoading ? "Carregando..." : "Baixar PDF"}
-              </Button>
-            </Box>
-
-          </CardContent>
-
         </Card>
       </Box>
 

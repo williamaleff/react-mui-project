@@ -10,6 +10,8 @@ import ClockPage from "../pages/clockpage/ClockPage";
 import { ListagemDeUser } from "../pages/user/ListagemDeUser";
 import { DetalheDeUser } from "../pages/user/DetalheDeUser";
 import { GroupAdd, Badge, Support, People, Analytics, Computer } from "@mui/icons-material";
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import { Malote } from "../pages/malote/Malote.tsx";
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -32,7 +34,12 @@ export const AppRoutes = () => {
             {
                 icon: <Support />,
                 path: '/config',
-                label: 'Configuração'
+                label: 'Atualização'
+            },
+            {
+                icon: <ShoppingBagIcon />,
+                path: '/malote',
+                label: 'Malote'
             },
             {
                 icon: <People />,
@@ -73,6 +80,8 @@ export const AppRoutes = () => {
             <Route path="/clock" element={<ClockPage />} />
 
             <Route path="/config" element={<Config />} />
+
+            <Route path="/malote" element={<Malote />} />
 
             <Route path="*" element={<Navigate to="/interno" />} />
             </>

@@ -1,9 +1,9 @@
 import { Paper, Avatar, Box, Button, CircularProgress, Link, TextField, Typography } from "@mui/material";
 import { useAuthContext } from "../../contexts";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as yup from 'yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 const loginSchema = yup.object().shape({
     email: yup.string().required(),
@@ -23,20 +23,8 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
-    const location = useLocation();
-    // Divide o caminho em segmentos e remove os vazios (caso haja barras extras)
-    const segments = location.pathname.split('/').filter(Boolean);
-
-    // Se não houver nenhum segmento (estamos na raiz), define o link como "/clock"
-    if (segments.length === 0) {
-        segments.push("clock");
-    } else {
-        // Substitui o último segmento por "clock"
-        segments[segments.length - 1] = "clock";
-    }
-
-    // Reconstrói o caminho com uma barra inicial
-    const newHref = `/${segments.join('/')}`;
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
 
     const handleSubmit = () => {
@@ -79,6 +67,24 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
         <>{children}</>
     );
 
+
+    const handleEmailKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            passwordRef.current?.focus();
+        }
+        setEmailError('');
+    };
+
+    const handlePasswordKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            buttonRef.current?.focus();
+            buttonRef.current?.click(); // Executa o clique no botão
+        }
+        setPasswordError('');
+    };
+
     const paperStyle = { padding: 20, height: '70vh', width: 280, margin: "20px auto" }
     const avatarStyle = { backgroundColor: '#1bbd7e' }
     return (
@@ -109,11 +115,12 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
                             disabled={isLoading}
                             error={!!emailError}
                             helperText={emailError}
-                            onKeyDown={() => setEmailError('')}
+                            onKeyDown={handleEmailKeyDown}
                             onChange={e => setEmail(e.target.value)}
                         />
 
                         <TextField
+                            inputRef={passwordRef}
                             fullWidth
                             label='Senha'
                             type="password"
@@ -122,11 +129,12 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
                             disabled={isLoading}
                             error={!!passwordError}
                             helperText={passwordError}
-                            onKeyDown={() => setPasswordError('')}
+                            onKeyDown={handlePasswordKeyDown}
                             onChange={e => setPassword(e.target.value)}
                         />
 
                         <Button
+                            ref={buttonRef}
                             disabled={isLoading}
                             variant="contained"
                             onClick={handleSubmit}
@@ -136,7 +144,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
                         </Button>
 
                         <Typography >
-                            <Link component={RouterLink} to={newHref} underline="none">
+                            <Link component={RouterLink} to="/clock" underline="none">
                                 Ir para tela de registro do ponto?
                             </Link>
                         </Typography>
