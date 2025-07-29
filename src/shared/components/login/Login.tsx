@@ -1,4 +1,4 @@
-import { Paper, Avatar, Box, Button, CircularProgress, Link, TextField, Typography } from "@mui/material";
+import { Paper, Avatar, Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useAuthContext } from "../../contexts";
 import { useRef, useState } from "react";
 import * as yup from 'yup';
@@ -143,11 +143,19 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
                             Entrar
                         </Button>
 
-                        <Typography >
-                            <Link component={RouterLink} to="/clock" underline="none">
-                                Ir para tela de registro do ponto?
-                            </Link>
-                        </Typography>
+                        <Button
+                            component={RouterLink}
+                            disabled={isLoading}
+                            to="/clock"
+                            variant="contained"
+                            color="secondary"
+                            fullWidth // opcional, se quiser ocupar toda a largura
+                            startIcon={isLoading ? <CircularProgress variant="indeterminate" color="inherit" size={20} /> : undefined}
+                            sx={{ textTransform: 'none', mt: 2 }} // opcional: evita o texto em CAPS LOCK
+                        >
+                            Ir para tela de registro do ponto?
+                        </Button>
+
                     </Box>
                 </Box>
             </Box>
