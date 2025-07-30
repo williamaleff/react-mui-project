@@ -31,17 +31,18 @@ export const DetalheDeInterno: React.FC = () => {
   const [nome, setNome] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openError, setOpenError] = useState(false);
- 
-   // Função para fechar o Snackbar
-    const handleClose = (
-     _event?: React.SyntheticEvent | Event,
-     reason?: string
-   ) => {
-     if (reason === 'clickaway') {
-       return;
-     }
-     setOpenError(false);
-   }; 
+  const [candidatoValido, setCandidatoValido] = useState<boolean>(false);
+
+  // Função para fechar o Snackbar
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenError(false);
+  };
 
   const navigate = useNavigate();
   const {
@@ -61,77 +62,89 @@ export const DetalheDeInterno: React.FC = () => {
   useEffect(() => {
     if (id !== 'novo') {
       setIsLoading(true);
-      
+
       InternoService.getById(Number(id))
-      .then((result) => {
+        .then((result) => {
           setIsLoading(false);
 
           if (result instanceof Error) {
             setErrorMessage(result.message);
             setOpenError(true);
-            navigate('/interno');                    
+            navigate('/interno');
           } else {
-              setNome(result.nome);
-              Object.entries(result).forEach( ([chave, valor]) => {
-                setValue(chave as keyof TFormDataInterno, valor)} )
+            setNome(result.nome);
+            Object.entries(result).forEach(([chave, valor]) => {
+              setValue(chave as keyof TFormDataInterno, valor)
+            })
 
-              UploadService.getByfile(result.foto).then((data) => {
-                  if (data instanceof Error) {
-                    setErrorMessage(data.message);
-                    setOpenError(true);
-                  } else {
-                    const imageUrlPreview = URL.createObjectURL(data);
-                    setImage(imageUrlPreview)
-                  }              
-              })
+            UploadService.getByfile(result.foto).then((data) => {
+              if (data instanceof Error) {
+                setErrorMessage(data.message);
+                setOpenError(true);
+              } else {
+                const imageUrlPreview = URL.createObjectURL(data);
+                setImage(imageUrlPreview)
+              }
+            })
           }
+        });
+
+    } else {
+      reset({
+        nome: '',
+        mae: '',
+        localizacao: '',
+        regime: 'FECHADO/CONDENADO',
+        funcao: '',
+        prontuario: '',
+        unidade: 'UNIDADE PRISIONAL REGIONAL DE SOBRAL',
+        digital: '',
+        foto: ''
       });
-      
-  } else {
-    reset({
-      nome: '',
-      mae: '',
-      localizacao: '',
-      regime: 'FECHADO/CONDENADO',
-      funcao: '',
-      prontuario: '',
-      unidade: 'UNIDADE PRISIONAL REGIONAL DE SOBRAL',
-      digital: '',
-      foto: ''
-    });
-  }
+    }
   }, [id, setValue, reset]);
 
-  const handleSave = async(data: TFormDataInterno) => {
-    setIsLoading(true);
-
-  // Aguarda o upload terminar e pega a URL retornada
-  var uploadedFileUrl = await handleUpload();
-
-  if (uploadedFileUrl instanceof Error) {
-    setErrorMessage(uploadedFileUrl.message);
+  const handleSave = async (data: TFormDataInterno) => {
+    if (!candidatoValido) {
+    setError('prontuario', {
+      type: 'manual',
+      message: 'O prontuário não é válido ou não está cadastrado.',
+    });
+    setErrorMessage("O prontuário precisa ser validado antes de salvar.");
     setOpenError(true);
-
-    await UploadService.getByfile("http://localhost:8989/uploads/blackdefaultavatar.png").then((data) => {
-      
-      if (data instanceof Error) {
-        setErrorMessage(data.message);
-        setOpenError(true);
-        setIsLoading(false);
-        return;
-      } else {
-        const imageUrlPreview = URL.createObjectURL(data);
-        setImage(imageUrlPreview)
-        uploadedFileUrl = "http://localhost:8989/uploads/blackdefaultavatar.png"
-      }
-    })
-    
+    return;
   }
 
-  // Atualiza o campo "foto" com a URL retornada do upload
-  const formData = { ...data, foto: uploadedFileUrl };
+    setIsLoading(true);
 
-  await formValidationSchema
+
+    // Aguarda o upload terminar e pega a URL retornada
+    var uploadedFileUrl = await handleUpload();
+
+    if (uploadedFileUrl instanceof Error) {
+      setErrorMessage(uploadedFileUrl.message);
+      setOpenError(true);
+
+      await UploadService.getByfile("http://localhost:8989/uploads/blackdefaultavatar.png").then((data) => {
+
+        if (data instanceof Error) {
+          setErrorMessage(data.message);
+          setOpenError(true);
+          setIsLoading(false);
+          return;
+        } else {
+          const imageUrlPreview = URL.createObjectURL(data);
+          setImage(imageUrlPreview)
+          uploadedFileUrl = "http://localhost:8989/uploads/blackdefaultavatar.png"
+        }
+      })
+
+    }
+
+    // Atualiza o campo "foto" com a URL retornada do upload
+    const formData = { ...data, foto: uploadedFileUrl };
+
+    await formValidationSchema
       .validate(formData, { abortEarly: false })
       .then((dadosValidados) => {
         setIsLoading(true);
@@ -161,7 +174,7 @@ export const DetalheDeInterno: React.FC = () => {
             if (result instanceof Error) {
               setErrorMessage(result.message);
               setOpenError(true);
-              } else {
+            } else {
               if (isSavingAndClose.current) {
                 navigate("/interno");
               }
@@ -186,33 +199,33 @@ export const DetalheDeInterno: React.FC = () => {
 
   const handleDelete = (id: number) => {
     if (confirm('Realmente deseja apagar?')) {
-        InternoService.deleteById(id)
+      InternoService.deleteById(id)
         .then(result => {
-            if (result instanceof Error) {
-                setErrorMessage(result.message);
-                setOpenError(true);
-            } else {
-                alert("Registro apagado com sucesso!")
-                navigate('/interno');
-            }
-        });            
+          if (result instanceof Error) {
+            setErrorMessage(result.message);
+            setOpenError(true);
+          } else {
+            alert("Registro apagado com sucesso!")
+            navigate('/interno');
+          }
+        });
     }
-}
-
-const [image, setImage] = useState<string | null>(null);
-const [file, setFile] = useState<File | null>(null);
-
-const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (event.target.files && event.target.files[0]) {
-    const file2 = event.target.files[0];
-    const imageUrl = URL.createObjectURL(file2);
-    setImage(imageUrl);
-    setFile(file2);
   }
-};
 
- // Função para realizar o upload do arquivo para o endpoint do Spring Boot
- const handleUpload = async(): Promise<String | Error> => {
+  const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file2 = event.target.files[0];
+      const imageUrl = URL.createObjectURL(file2);
+      setImage(imageUrl);
+      setFile(file2);
+    }
+  };
+
+  // Função para realizar o upload do arquivo para o endpoint do Spring Boot
+  const handleUpload = async (): Promise<String | Error> => {
     if (!file) return new Error("Nenhum arquivo selecionado.");
     setIsLoading(true);
 
@@ -220,7 +233,7 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     formData.append("file", file);
 
     return await UploadService.create(formData).then((result) => {
-     
+
       if (result instanceof Error) {
         setErrorMessage(result.message + "\n Não foi possível enviar a foto para o backend");
         setOpenError(true);
@@ -229,26 +242,26 @@ const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue("foto", String(result.url));
         return String(result.url);
       }
-    });  
+    });
 
-};
+  };
 
-////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////
 
-const [loading, setLoading] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const handleClick = async () => {
     setLoading(true);
     try {
       const response = await fetch('http://localhost:9000/api/public/v1/captura/Capturar/1');
       const data = await response.json();
       setValue("digital", data || "Digital cadastrada")
-      if(data == null){
+      if (data == null) {
         setErrorMessage("Sem resposta do leitor biométrico.");
         setOpenError(true);
       }
     } catch (error) {
-      setErrorMessage("Erro ao chamar API: "+ error);
+      setErrorMessage("Erro ao chamar API: " + error);
       setOpenError(true);
     } finally {
       setLoading(false);
@@ -261,7 +274,7 @@ const [loading, setLoading] = useState(false);
     if (/^\d{6}$/.test(prontuario) || /^\d{5}$/.test(prontuario)) {
       try {
         const candidato = await CandidatosService.getCandidatoByProntuario(prontuario);
-        
+
         // Se a API retornar os dados do candidato, preenche os campos
         if (candidato) {
           setValue('nome', candidato.nome || '');
@@ -272,15 +285,20 @@ const [loading, setLoading] = useState(false);
           setValue('regime', candidato.tipoDeRegime || '');
           setValue('funcao', candidato.funcao || '');
           setValue('unidade', candidato.unidade || '');
+
+          setCandidatoValido(true);
         } else {
+          setCandidatoValido(false);
           setErrorMessage("Candidato não encontrado.");
           setOpenError(true);
         }
       } catch (error: any) {
-        setErrorMessage("Erro ao buscar candidato: "+ error);
+        setCandidatoValido(false);
+        setErrorMessage("Erro ao buscar prontuário.");
         setOpenError(true);
       }
     } else {
+      setCandidatoValido(false);
       setError('prontuario', { type: 'manual', message: 'O prontuário deve conter 5 ou 6 números.' });
     }
   };
@@ -335,31 +353,31 @@ const [loading, setLoading] = useState(false);
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-              <input
-        accept="image/*"
-        type="file"
-        id="upload-photo"
-        style={{ display: "none" }}
-        onChange={handleImageChange}
-      />
-       <label htmlFor="upload-photo">
-        <IconButton component="span" style={{ position: "relative" }}>
-          <Avatar
-            src={image || ""}
-            sx={{ width: 100, height: 100 }}
-          />
-          <PhotoCameraIcon
-            sx={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              backgroundColor: "white",
-              borderRadius: "50%",
-              padding: "4px",
-            }}
-          />
-        </IconButton>
-      </label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="upload-photo"
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
+                />
+                <label htmlFor="upload-photo">
+                  <IconButton component="span" style={{ position: "relative" }}>
+                    <Avatar
+                      src={image || ""}
+                      sx={{ width: 100, height: 100 }}
+                    />
+                    <PhotoCameraIcon
+                      sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                        padding: "4px",
+                      }}
+                    />
+                  </IconButton>
+                </label>
                 <TextField style={{ margin: "5% 2%" }}
                   placeholder="Prontuário"
                   label="Prontuário"
@@ -373,12 +391,12 @@ const [loading, setLoading] = useState(false);
                   inputRef={ref}
                   {...rest}
                   inputProps={{ inputMode: 'numeric', maxLength: 6, pattern: '[0-9]*' }} // Corrigido para inputProps
-                  InputLabelProps={{ shrink: true }} 
+                  InputLabelProps={{ shrink: true }}
                   error={!!errors.prontuario}
                   helperText={errors.prontuario ? errors.prontuario.message : ""}
                 />
               </Grid>
-            </Grid>     
+            </Grid>
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
@@ -386,14 +404,14 @@ const [loading, setLoading] = useState(false);
                   placeholder="Nome"
                   label="Nome"
                   disabled={isLoading}
-                  InputLabelProps={{ shrink: true }} 
+                  InputLabelProps={{ shrink: true }}
                   fullWidth
                   {...register("nome")}
                   error={!!errors.nome}
                   helperText={errors.nome ? errors.nome.message : ""}
                 />
               </Grid>
-            </Grid>          
+            </Grid>
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
@@ -408,7 +426,7 @@ const [loading, setLoading] = useState(false);
                   helperText={errors.mae ? errors.mae.message : ""}
                 />
               </Grid>
-            </Grid>          
+            </Grid>
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
@@ -423,7 +441,7 @@ const [loading, setLoading] = useState(false);
                   helperText={errors.localizacao ? errors.localizacao.message : ""}
                 />
               </Grid>
-            </Grid>          
+            </Grid>
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
@@ -438,22 +456,22 @@ const [loading, setLoading] = useState(false);
                   helperText={errors.funcao ? errors.funcao.message : ""}
                 />
               </Grid>
-            </Grid>   
+            </Grid>
 
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-              <Button
-      variant="contained"
-      color="primary"
-      onClick={handleClick}
-      disabled={loading}
-      
-      startIcon={loading ? <CircularProgress size={20} /> : null}
-    >
-      {loading ? "Carregando..." : "Cadastrar digital"}
-    </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClick}
+                  disabled={loading}
+
+                  startIcon={loading ? <CircularProgress size={20} /> : null}
+                >
+                  {loading ? "Carregando..." : "Cadastrar digital"}
+                </Button>
               </Grid>
-            </Grid>   
+            </Grid>
           </Grid>
         </Box>
       </form>
