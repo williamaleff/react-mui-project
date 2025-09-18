@@ -101,7 +101,7 @@ export const Login: React.FC<ILoginProps> = ({ children }) => {
                         <h1 style={{ marginInline: 4, textAlign: 'center' }}>Hefesto</h1>
                         <Box />
                     </Box>
-                    <h2 style={{ margin: 2, width: '100%', textAlign: 'center' }}>Sistema de Gerenciamento de remição</h2>
+                    <h2 style={{ margin: 2, width: '100%', textAlign: 'center' }}>Sistema de Gerenciamento local</h2>
                 </Box>
                 <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
 

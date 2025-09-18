@@ -188,7 +188,7 @@ export const Malote: React.FC = () => {
             <Typography>
               Última atualização em {atualizaData}
             </Typography>
-            <Typography sx={{ mb: 1 }}>
+            <Typography sx={{ mb: 2 }}>
               Obs: Enviar arquivo .xlsx do sigepen contendo tipo_de_regime,
               ultima_localizacao, unidade, prontuario, nome, mae
             </Typography>
