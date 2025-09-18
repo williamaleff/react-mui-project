@@ -12,6 +12,9 @@ import { DetalheDeUser } from "../pages/user/DetalheDeUser";
 import { GroupAdd, Badge, Support, People, Analytics, Computer } from "@mui/icons-material";
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Malote } from "../pages/malote/Malote.tsx";
+import Monitoramento from "../pages/monitoramento/Monitoramento.tsx"
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
 
 export const AppRoutes = () => {
     const { setDrawerOptions } = useDrawerContext();
@@ -50,15 +53,25 @@ export const AppRoutes = () => {
                 icon: <Analytics />,
                 path: '/dashboard',
                 label: 'Dashboard'
+            },
+            {
+                icon: <DashboardIcon />,
+                path: '/monitoramento',
+                label: 'Monitoramento'
             }
         ])
     }else{
         setDrawerOptions([
             {
-              icon: <Computer />,
-              path: "/clock",
-              label: "Tela do Ponto",
+                icon: <ShoppingBagIcon />,
+                path: '/malote',
+                label: 'Malote'
             },
+            // {
+            //   icon: <Computer />,
+            //   path: "/clock",
+            //   label: "Tela do Ponto",
+            // },
           ]);
     }
     }, [isAdmin, setDrawerOptions]);
@@ -83,13 +96,17 @@ export const AppRoutes = () => {
 
             <Route path="/malote" element={<Malote />} />
 
+            <Route path="/monitoramento" element={<Monitoramento />} />
+
             <Route path="*" element={<Navigate to="/interno" />} />
             </>
         ) :(
             <>
-          <Route path="/clock" element={<ClockPage />} />
+          <Route path="/malote" element={<Malote />} />
+          {/* <Route path="/clock" element={<ClockPage />} /> */}
+          
           {/* Redireciona qualquer outra rota para /clock */}
-          <Route path="*" element={<Navigate to="/clock" />} />
+          <Route path="*" element={<Navigate to="/malote" />} />
         </>
         )}
         </Routes>

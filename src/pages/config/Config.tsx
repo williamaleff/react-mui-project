@@ -129,9 +129,16 @@ export const Config: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               ATUALIZAR AUTOCOMPLETE PELOS PRONTUÁRIOS
             </Typography>
-            <Typography>
-              Última atualização em {atualizaData}
+            <Typography sx={{ mb: 1 }}>
+              * Última atualização em {atualizaData}
             </Typography>
+            <Typography sx={{ mb: 1 }}>
+              Obs: Enviar arquivo .xlsx do sigepen contendo tipo_de_regime, 
+              ultima_localizacao, unidade, prontuario, nome, mae ou arquivo 
+              personalizado com Prontuário, Nome, Mãe, Última localização, 
+              Função/Cargo, Regime 
+            </Typography>
+
 
             {isLoading && (<LinearProgress variant="indeterminate" />)}
 
