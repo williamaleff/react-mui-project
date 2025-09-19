@@ -9,7 +9,7 @@ import { Config } from "../pages/config/Config";
 import ClockPage from "../pages/clockpage/ClockPage";
 import { ListagemDeUser } from "../pages/user/ListagemDeUser";
 import { DetalheDeUser } from "../pages/user/DetalheDeUser";
-import { GroupAdd, Badge, Support, People, Analytics, Computer } from "@mui/icons-material";
+import { GroupAdd, Badge, Support, People, Analytics } from "@mui/icons-material";
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Malote } from "../pages/malote/Malote.tsx";
 import Monitoramento from "../pages/monitoramento/Monitoramento.tsx"
