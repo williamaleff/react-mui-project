@@ -84,8 +84,12 @@ const downloadRegistrosPDF = async (funcao: string | null,  ano: number, mes: nu
 
       const response = await Api.get(urlApi, { responseType: 'blob' });
 
+    if (response.status == 204){
+       return new Error("Nenhum registro de ponto encontrado");
+    }
+
     if (response.data.size == 0) {
-      return new Error("Erro no conteúdo  do PDF.");
+      return new Error("Erro no conteúdo do PDF");
     }
 
     // Criar um link para download do arquivo
@@ -105,7 +109,7 @@ const downloadRegistrosPDF = async (funcao: string | null,  ano: number, mes: nu
   }
 };
 
-const downloadExcelRegistros = async (ano: number, mes: number): Promise<void> => {
+const downloadExcelRegistros = async (funcao: string | null, ano: number, mes: number): Promise<void> => {
   try {
     const accessTokenData = localStorage.getItem('APP_ACCESS_TOKEN');
     if (accessTokenData) {
@@ -114,8 +118,15 @@ const downloadExcelRegistros = async (ano: number, mes: number): Promise<void> =
     } else {
       setAuthToken(null);
     }
-    const response = await Api.get(`ponto/registros/mes/excel`, {
-      params: { ano, mes },
+
+    // Monta os parâmetros condicionalmente
+    const params: any = { ano, mes };
+    if (funcao && funcao !== 'TODOS') {
+      params.funcao = funcao;
+    }
+
+    const response = await Api.get(`/registros/mes/excel`, {
+      params,
       responseType: 'blob', // importante para lidar com arquivos binários
     });
 
@@ -198,10 +209,10 @@ const downloadRegistrosPDFporID = async (funcionarioId: number, ano: number, mes
   }
 };
 
-const downloadExcelRegistrosporId = async (funcionarioId: number, ano: number, mes: number): Promise<void> => {
+const downloadExcelRegistrosporId = async (idFuncionario: number, ano: number, mes: number): Promise<void> => {
   try {
-    const response = await Api.get(`/ponto/registros/funcionario/excel`, {
-      params: { funcionarioId, ano, mes },
+    const response = await Api.get(`/registros/mes/excel`, {
+      params: { idFuncionario, ano, mes },
       responseType: 'blob', // importante para lidar com arquivos binários
     });
 

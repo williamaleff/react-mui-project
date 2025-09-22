@@ -33,7 +33,7 @@ export const Frequencia: React.FC = () => {
   const [openError, setOpenError] = useState(false);
 
   const [funcoes, setFuncoes] = useState<string[]>([]);
-  const [selectedFuncao, setSelectedFuncao] = useState<string>('Todos');
+  const [selectedFuncao, setSelectedFuncao] = useState<string>('TODOS');
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -134,24 +134,25 @@ export const Frequencia: React.FC = () => {
 
   }, [id, month]);
 
-  useEffect(()=>{
-      CandidatosService.getCandidatosFuncoes().then((funcoes) => {
-        if (funcoes instanceof Error) {
-          setErrorMessage(funcoes.message);
-          setOpenError(true);
-        }else{
-          setFuncoes(['TODOS', ...funcoes]);
-        }
+  useEffect(() => {
+    CandidatosService.getCandidatosFuncoes().then((funcoes) => {
+      if (funcoes instanceof Error) {
+        setErrorMessage(funcoes.message);
+        setOpenError(true);
+      } else {
+        const funcoesFiltradas = Array.from(new Set(funcoes.filter(f => f && f.trim() !== '')));
+        setFuncoes(['TODOS', ...funcoesFiltradas]);
+      }
 
-      });
-  },[]);
+    });
+  }, []);
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMonth(event.target.value);
 
   };
 
-  const handleClickPDF = async () => {
+  const handleClickPDF: () => Promise<void> = async () => {
     setIsLoading(true);
     const [ano, mes] = month.split('-').map(Number);
     const funcao = selectedFuncao;
@@ -187,10 +188,13 @@ export const Frequencia: React.FC = () => {
       await PontoService.downloadExcelRegistrosporId(Number(id), ano, mes);
       setIsLoading(false);
 
-    } else {
-      await PontoService.downloadExcelRegistros(ano, mes);
+    } else if (selectedFuncao && selectedFuncao !== 'TODOS') {
+      // Quando função está definida e não é TODOS
+      await PontoService.downloadExcelRegistros(selectedFuncao, ano, mes);
       setIsLoading(false);
-
+    } else {
+      await PontoService.downloadExcelRegistros(null, ano, mes);
+      setIsLoading(false);
     }
   };
 
@@ -287,25 +291,25 @@ export const Frequencia: React.FC = () => {
                 <Button variant="contained">Pesquisar</Button>
                 */}
                 {!isIndividual && (
-                <Autocomplete
-                  freeSolo
-                  options={funcoes}
-                  value={selectedFuncao}
-                  onChange={(_event, newValue) => {
-                    // Se newValue for nulo, mantém "Todos"
-                    setSelectedFuncao(newValue || 'TODOS');
-                  }}
-                  getOptionLabel={(option) => (typeof option === 'string' ? option : '')}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Função" variant="outlined" />
-                  )}
-                  style={{ width: 300 }}
-                />
+                  <Autocomplete
+                    freeSolo
+                    options={funcoes}
+                    value={selectedFuncao}
+                    onChange={(_event, newValue) => {
+                      // Se newValue for nulo, mantém "Todos"
+                      setSelectedFuncao(newValue || 'TODOS');
+                    }}
+                    getOptionLabel={(option) => (typeof option === 'string' ? option : '')}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Função" variant="outlined" />
+                    )}
+                    style={{ width: 300 }}
+                  />
                 )}
               </Box>
             </Box>
             {isLoading && (<LinearProgress variant="indeterminate" />)}
-            <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2} sx={{ pr: 4}}>
+            <Box mt={2} display="flex" gap="10px" justifyContent="flex-end" marginBottom={2} sx={{ pr: 4 }}>
               <Button
                 variant="contained"
                 color="success"
